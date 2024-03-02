@@ -1,42 +1,42 @@
 type TGame = {
-    id: string 
-    collectionA: TGameCollection
-    collectionB: TGameCollection
-    collectionC: TGameCollection
-    collectionD: TGameCollection
+date: string
+groupEasy: TGameCollection
+groupMedium: TGameCollection
+groupHard: TGameCollection
+groupExpert: TGameCollection
 }
 
 type TGameCollection = {
-    itemA: string
-    itemB: string
-    itemC: string
-    itemD: string
+itemA: string
+itemB: string
+itemC: string
+itemD: string
 }
 
 {
-    "id": "string",
-    "collectionA": {
-        "itemA": "string"
-        "itemB": "string"
-        "itemC": "string"
-        "itemD": "string"
-    },
-    "collectionB": {
-        "itemA": "string"
-        "itemB": "string"
-        "itemC": "string"
-        "itemD": "string"
-    },
-    "collectionC": {
-        "itemA": "string"
-        "itemB": "string"
-        "itemC": "string"
-        "itemD": "string"
-    },
-    "collectionD": {
-        "itemA": "string"
-        "itemB": "string"
-        "itemC": "string"
-        "itemD": "string"
-    }
+"date": "string",
+"groupEasy": {
+"itemA": "string"
+"itemB": "string"
+"itemC": "string"
+"itemD": "string"
+},
+"groupMedium": {
+"itemA": "string"
+"itemB": "string"
+"itemC": "string"
+"itemD": "string"
+},
+"groupHard": {
+"itemA": "string"
+"itemB": "string"
+"itemC": "string"
+"itemD": "string"
+},
+"groupExpert": {
+"itemA": "string"
+"itemB": "string"
+"itemC": "string"
+"itemD": "string"
+}
 }
