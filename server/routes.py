@@ -2,11 +2,11 @@ from flask import jsonify, request
 from config import app, mongo
 from models import Game
 
-@app.route("/", methods=["GET"])
+@app.route("/api", methods=["GET"])
 def get_app():
     return jsonify({"message": "Hello World"})
 
-@app.route("/game/<date>", methods=["GET"])
+@app.route("/api/game/<date>", methods=["GET"])
 def get_game(date):
     game = mongo.db.games.find_one({'date': date})
     if (game):
@@ -15,7 +15,7 @@ def get_game(date):
     else:
         return jsonify({"message": "No game found"}), 404
     
-@app.route("/add_game", methods=["POST"])
+@app.route("/api/add_game", methods=["POST"])
 def add_game():
     try:
         data = request.json
