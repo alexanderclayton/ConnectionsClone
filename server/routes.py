@@ -10,6 +10,7 @@ def get_app():
 def get_game(date):
     game = mongo.db.games.find_one({'date': date})
     if (game):
+        game['_id'] = str(game['_id'])
         return jsonify(game), 200
     else:
         return jsonify({"message": "No game found"}), 404
