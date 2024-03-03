@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "concurrently \"cd client && npm run dev\" \"cd server && python main.py\"",
-    "build": "cd client && npm run build && cd ../server && pip install -r requirements.txt && python main.py",
+    "build": "cd client && npm run build",
+    "deploy": "cd server && pip install -r requirements.txt && vercel --prod",
     "lint": "cd client && npm run lint",
     "preview": "cd client && npm run preview"
   },
