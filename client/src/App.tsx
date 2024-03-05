@@ -17,12 +17,49 @@ type TGroup = {
   itemD: string;
 };
 
+type TConnection = {
+  groupName: string;
+  connection: string;
+};
+
 function App() {
   const [game, setGame] = useState<TGame | undefined>(undefined);
+  const [connections, setConnections] = useState<TConnection[] | undefined>(
+    undefined,
+  );
+
+  const mapConnections = (game: TGame) => {
+    let mappedConnections: TConnection[] = [];
+    const groups = [
+      "groupEasy",
+      "groupMedium",
+      "groupHard",
+      "groupExpert",
+    ] as const;
+    for (const groupName of groups) {
+      const group = game[groupName];
+      const groupConnections = Object.keys(group)
+        .filter((key) => key !== "groupName")
+        .map((item) => ({
+          groupName: group.groupName,
+          connection: group[item as keyof TGroup],
+        }));
+      mappedConnections.push(...groupConnections);
+    }
+    shuffleConnections(mappedConnections);
+  };
+
+  const shuffleConnections = (connections: TConnection[]) => {
+    for (let i = connections.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [connections[i], connections[j]] = [connections[j], connections[i]];
+    }
+    setConnections(connections);
+  };
 
   const fetchGame = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/game/01March2024", {
+      const response = await fetch("http://127.0.0.1:5000/game/04March2024", {
         method: "GET",
         mode: "cors",
         headers: {
@@ -43,35 +80,17 @@ function App() {
     fetchGame();
   }, []);
 
+  useEffect(() => {
+    if (game !== undefined) {
+      mapConnections(game);
+    }
+  }, [game]);
+
   return (
     <>
-      <h2 className="font-bold">Hello World</h2>
-      {game && (
-        <div className="flex flex-col">
-          <p className="font-bold">{game._id}</p>
-          <p className="font-bold">{game.date}</p>
-          <p className="font-bold">{game.groupEasy.toString()}</p>
-          <p>{game.groupEasy.itemA}</p>
-          <p>{game.groupEasy.itemB}</p>
-          <p>{game.groupEasy.itemC}</p>
-          <p>{game.groupEasy.itemD}</p>
-          <p className="font-bold">{game.groupMedium.toString()}</p>
-          <p>{game.groupMedium.itemA}</p>
-          <p>{game.groupMedium.itemB}</p>
-          <p>{game.groupMedium.itemC}</p>
-          <p>{game.groupMedium.itemD}</p>
-          <p className="font-bold">{game.groupHard.toString()}</p>
-          <p>{game.groupHard.itemA}</p>
-          <p>{game.groupHard.itemB}</p>
-          <p>{game.groupHard.itemC}</p>
-          <p>{game.groupHard.itemD}</p>
-          <p className="font-bold">{game.groupExpert.toString()}</p>
-          <p>{game.groupExpert.itemA}</p>
-          <p>{game.groupExpert.itemB}</p>
-          <p>{game.groupExpert.itemC}</p>
-          <p>{game.groupExpert.itemD}</p>
-        </div>
-      )}
+      {connections?.map((connection, idx) => (
+        <div key={idx}>{connection.connection}</div>
+      ))}
     </>
   );
 }
