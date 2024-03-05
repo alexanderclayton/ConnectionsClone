@@ -10,6 +10,7 @@ type TGame = {
 };
 
 type TGroup = {
+  groupName: string;
   itemA: string;
   itemB: string;
   itemC: string;
