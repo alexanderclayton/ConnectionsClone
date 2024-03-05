@@ -27,7 +27,8 @@ class Game:
         }
     
 class Group:
-    def __init__(self, item_a, item_b, item_c, item_d):
+    def __init__(self, group_name, item_a, item_b, item_c, item_d):
+        self.group_name = group_name
         self.item_a = item_a
         self.item_b = item_b
         self.item_c = item_c
@@ -36,6 +37,7 @@ class Group:
     @staticmethod
     def from_json(json_data):
         return Group(
+            group_name=json_data['groupName'],
             item_a=json_data['itemA'],
             item_b=json_data['itemB'],
             item_c=json_data['itemC'],
@@ -44,6 +46,7 @@ class Group:
     
     def to_json(self):
         return {
+            'groupName': self.group_name,
             'itemA': self.item_a,
             'itemB': self.item_b,
             'itemC': self.item_c,
