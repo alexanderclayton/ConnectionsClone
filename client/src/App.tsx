@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { GamePiece } from "./components/GamePiece";
 
 type TGame = {
   _id: string;
@@ -17,7 +18,7 @@ type TGroup = {
   itemD: string;
 };
 
-type TConnection = {
+export type TConnection = {
   groupName: string;
   connection: string;
 };
@@ -27,8 +28,9 @@ function App() {
   const [connections, setConnections] = useState<TConnection[] | undefined>(
     undefined,
   );
+  const selections: TConnection[] = [];
 
-  const mapConnections = (game: TGame) => {
+  const getConnections = (game: TGame) => {
     let mappedConnections: TConnection[] = [];
     const groups = [
       "groupEasy",
@@ -57,6 +59,17 @@ function App() {
     setConnections(connections);
   };
 
+  const handleSubmit = () => {
+    const group: string[] = [];
+    selections.map((selection) => group.push(selection.groupName));
+    const groupName = group[0];
+    if (group.every((element) => element === groupName)) {
+      console.log("correct");
+    } else {
+      console.log("wrong");
+    }
+  };
+
   const fetchGame = async () => {
     try {
       const response = await fetch("http://127.0.0.1:5000/game/04March2024", {
@@ -82,15 +95,30 @@ function App() {
 
   useEffect(() => {
     if (game !== undefined) {
-      mapConnections(game);
+      getConnections(game);
     }
   }, [game]);
 
   return (
     <>
-      {connections?.map((connection, idx) => (
-        <div key={idx}>{connection.connection}</div>
-      ))}
+      <div className="aspect-4/1 w-full p-4">
+        <button
+          onClick={() => console.log(selections)}
+          className="h-full w-full rounded-lg"
+        >
+          Test
+        </button>
+      </div>
+      <div className="grid grid-cols-4">
+        {connections?.map((connection, idx) => (
+          <GamePiece
+            key={idx}
+            connection={connection}
+            selections={selections}
+          />
+        ))}
+      </div>
+      <button onClick={handleSubmit}>Submit</button>
     </>
   );
 }
