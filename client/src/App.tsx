@@ -28,8 +28,11 @@ function App() {
   const [connections, setConnections] = useState<TConnection[] | undefined>(
     undefined,
   );
+  const [solution, setSolution] = useState<TGroup | undefined>(undefined);
+  const [solutions, setSolutions] = useState<(TGroup | undefined)[]>([]);
+  const [selections, setSelections] = useState<TConnection[]>([]);
   const [currentDate, setCurrentDate] = useState("");
-  const selections: TConnection[] = [];
+  const [correct, setCorrect] = useState(false);
 
   const getConnections = (game: TGame) => {
     let mappedConnections: TConnection[] = [];
@@ -61,14 +64,44 @@ function App() {
   };
 
   const handleSubmit = () => {
-    const group: string[] = [];
-    selections.map((selection) => group.push(selection.groupName));
-    const groupName = group[0];
-    if (group.every((element) => element === groupName)) {
-      console.log("correct");
+    if (selections.length > 0) {
+      if (selections.length < 4) {
+        console.log("Must select 4 solutions!");
+      } else {
+        const group: string[] = [];
+        selections.map((selection) => group.push(selection.groupName));
+        const groupName = group[0];
+        if (group.every((element) => element === groupName)) {
+          setSolution({
+            groupName: selections[0].groupName,
+            itemA: selections[0].connection,
+            itemB: selections[1].connection,
+            itemC: selections[2].connection,
+            itemD: selections[3].connection,
+          });
+          if (connections !== undefined) {
+            const updatedConnections = connections.filter(
+              (connection) => !selections.includes(connection),
+            );
+            setConnections(updatedConnections);
+          }
+          setSelections([]);
+          setCorrect(!correct);
+          console.log("correct");
+        } else {
+          setSelections([]);
+          setCorrect(!correct);
+          console.log("wrong");
+        }
+      }
     } else {
-      console.log("wrong");
+      console.log("Nothing selected!!");
     }
+  };
+
+  const handleCorrect = () => {
+    setSolutions((prevSolutions) => [...prevSolutions, solution]);
+    setSolution(undefined);
   };
 
   const months = [
@@ -135,15 +168,39 @@ function App() {
     }
   }, [game]);
 
+  useEffect(() => {
+    if (solution !== undefined) {
+      handleCorrect();
+    }
+  }, [correct]);
+
   return (
     <>
       <div className="aspect-4/1 w-full p-4">
         <button
-          onClick={() => console.log(currentDate)}
+          onClick={() => console.log(selections)}
           className="h-full w-full rounded-lg"
         >
           Test
         </button>
+        {solutions.length > 0 && (
+          <div className="w-full">
+            {solutions.map((solution, idx) => (
+              <div
+                key={idx}
+                className="aspect-8/1 mt-4 flex w-full flex-col items-center justify-center rounded-xl bg-red-300"
+              >
+                <h3>{solution?.groupName}</h3>
+                <div className="flex justify-around">
+                  <p>{solution?.itemA}</p>
+                  <p>{solution?.itemB}</p>
+                  <p>{solution?.itemC}</p>
+                  <p>{solution?.itemD}</p>
+                </div>
+              </div>
+            ))}{" "}
+          </div>
+        )}
       </div>
       <div className="grid grid-cols-4">
         {connections?.map((connection, idx) => (
@@ -151,6 +208,8 @@ function App() {
             key={idx}
             connection={connection}
             selections={selections}
+            setSelections={setSelections}
+            correct={correct}
           />
         ))}
       </div>
