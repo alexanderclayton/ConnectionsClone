@@ -58,3 +58,8 @@ score: number
 "email": "string"
 "record": [{score}, {score}, {score}]
 }
+
+{
+"username": "test",
+"password": "test"
+}

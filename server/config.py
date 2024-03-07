@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_pymongo import PyMongo
 from flask_cors import CORS
+from flask_bcrypt import Bcrypt
 from dotenv import load_dotenv
 import os
 
@@ -9,6 +10,8 @@ MONGODB_URI = os.getenv("MONGODB_URI")
 
 app = Flask(__name__)
 CORS(app)
+
+bcrypt = Bcrypt(app)
 
 app.config["MONGO_URI"] = MONGODB_URI
 
