@@ -28,6 +28,7 @@ function App() {
   const [connections, setConnections] = useState<TConnection[] | undefined>(
     undefined,
   );
+  const [currentDate, setCurrentDate] = useState("");
   const selections: TConnection[] = [];
 
   const getConnections = (game: TGame) => {
@@ -70,15 +71,44 @@ function App() {
     }
   };
 
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const formatDate = () => {
+    const today = new Date();
+    let date = today.getDate().toString();
+    const month = months[today.getMonth()].toString();
+    const year = today.getFullYear().toString();
+    if (parseInt(date) < 10) {
+      date = "0" + date;
+    }
+    setCurrentDate(date + month + year);
+  };
+
   const fetchGame = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/game/04March2024", {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `http://127.0.0.1:5000/game/${currentDate}`,
+        {
+          method: "GET",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      });
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch game");
       }
@@ -90,8 +120,14 @@ function App() {
   };
 
   useEffect(() => {
-    fetchGame();
+    formatDate();
   }, []);
+
+  useEffect(() => {
+    if (currentDate !== "") {
+      fetchGame();
+    }
+  }, [currentDate]);
 
   useEffect(() => {
     if (game !== undefined) {
@@ -103,7 +139,7 @@ function App() {
     <>
       <div className="aspect-4/1 w-full p-4">
         <button
-          onClick={() => console.log(selections)}
+          onClick={() => console.log(currentDate)}
           className="h-full w-full rounded-lg"
         >
           Test
