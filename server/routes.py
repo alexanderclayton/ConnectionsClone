@@ -35,7 +35,7 @@ def add_game():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route("/get_user", methods=["GET"])
+@app.route("/get_user", methods=["POST"])
 def get_user():
     data = request.json
     username = data.get('username')
