@@ -54,9 +54,10 @@ class Group:
         }
     
 class User:
-    def __init__(self, username, email, record):
+    def __init__(self, username, email, password, record):
         self.username = username
         self.email = email
+        self.password = password
         self.record = record
 
     @staticmethod
@@ -64,6 +65,7 @@ class User:
         return User(
             username=json_data['username'],
             email=json_data['email'],
+            password=json_data['password'],
             record=[Score.from_json(score_data) for score_data in json_data['record']]
         )
     
@@ -71,6 +73,7 @@ class User:
         return {
             'username': self.username,
             'email': self.email,
+            'password': self.password,
             'record': [score.to_json() for score in self.record]
         }
     

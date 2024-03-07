@@ -1,4 +1,5 @@
 from flask import jsonify, request
+from flask_bcrypt import generate_password_hash, check_password_hash
 from config import app, mongo
 from models import Game, User
 
@@ -33,14 +34,33 @@ def add_game():
         return jsonify({"error": str(ve)}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route("/get_user", methods=["GET"])
+def get_user():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+    user = mongo.db.users.find_one({'username': username})
+    if (user):
+        hashed_password = user.get('password')
+        if (check_password_hash(hashed_password, password)):
+            user['_id'] = str(user['_id'])
+            return jsonify(user), 200
+        else:
+            return jsonify({"message": "Incorrect password"}), 401
+    else:
+        return jsonify({"message": "No user with that username found"}), 404
     
 @app.route("/add_user", methods=["POST"])
 def add_user():
     try:
         data = request.json
-        user_fields = ['username', 'email', 'record']
+        user_fields = ['username', 'email', 'password', 'record']
         if not all(key in data for key in user_fields):
             raise ValueError({"error": "User doesn't include all required fields"})
+        password = data.get('password')
+        hashed_password = generate_password_hash(password).decode('utf-8')
+        data['password'] = hashed_password
         new_user = User.from_json(data)
         mongo.db.users.insert_one(new_user.to_json())
         return jsonify({"message": f"Added user {data['username']}"})
@@ -48,3 +68,4 @@ def add_user():
         return jsonify({"error": str(ve)}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
