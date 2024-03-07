@@ -33,6 +33,7 @@ function App() {
   const [selections, setSelections] = useState<TConnection[]>([]);
   const [currentDate, setCurrentDate] = useState("");
   const [correct, setCorrect] = useState(false);
+  const [incorrect, setIncorrect] = useState(0);
 
   const getConnections = (game: TGame) => {
     let mappedConnections: TConnection[] = [];
@@ -91,6 +92,7 @@ function App() {
         } else {
           setSelections([]);
           setCorrect(!correct);
+          setIncorrect(incorrect + 1);
           console.log("wrong");
         }
       }
@@ -176,44 +178,62 @@ function App() {
 
   return (
     <>
-      <div className="aspect-4/1 w-full p-4">
-        <button
-          onClick={() => console.log(selections)}
-          className="h-full w-full rounded-lg"
-        >
-          Test
-        </button>
-        {solutions.length > 0 && (
-          <div className="w-full">
-            {solutions.map((solution, idx) => (
+      {incorrect < 4 && (
+        <>
+          <div className="aspect-4/1 w-full p-4">
+            <button
+              onClick={() => console.log(incorrect)}
+              className="h-full w-full rounded-lg"
+            >
+              Test
+            </button>
+            <div className="flex items-center">
+              <h3>{4 - incorrect} guesses left</h3>
               <div
-                key={idx}
-                className="aspect-8/1 mt-4 flex w-full flex-col items-center justify-center rounded-xl bg-red-300"
-              >
-                <h3>{solution?.groupName}</h3>
-                <div className="flex justify-around">
-                  <p>{solution?.itemA}</p>
-                  <p>{solution?.itemB}</p>
-                  <p>{solution?.itemC}</p>
-                  <p>{solution?.itemD}</p>
-                </div>
+                className={`m-4 h-8 w-8 rounded-full border ${incorrect > 0 && "bg-red-600"}`}
+              />
+              <div
+                className={`m-4 h-8 w-8 rounded-full border ${incorrect > 1 && "bg-red-600"}`}
+              />
+              <div
+                className={`m-4 h-8 w-8 rounded-full border ${incorrect > 2 && "bg-red-600"}`}
+              />
+              <div className={`m-4 h-8 w-8 rounded-full border`} />
+            </div>
+            {solutions.length > 0 && (
+              <div className="w-full">
+                {solutions.map((solution, idx) => (
+                  <div
+                    key={idx}
+                    className="aspect-8/1 mt-4 flex w-full flex-col items-center justify-center rounded-xl bg-red-300"
+                  >
+                    <h3>{solution?.groupName}</h3>
+                    <div className="flex justify-around">
+                      <p>{solution?.itemA}</p>
+                      <p>{solution?.itemB}</p>
+                      <p>{solution?.itemC}</p>
+                      <p>{solution?.itemD}</p>
+                    </div>
+                  </div>
+                ))}{" "}
               </div>
-            ))}{" "}
+            )}
           </div>
-        )}
-      </div>
-      <div className="grid grid-cols-4">
-        {connections?.map((connection, idx) => (
-          <GamePiece
-            key={idx}
-            connection={connection}
-            selections={selections}
-            setSelections={setSelections}
-            correct={correct}
-          />
-        ))}
-      </div>
-      <button onClick={handleSubmit}>Submit</button>
+          <div className="grid grid-cols-4">
+            {connections?.map((connection, idx) => (
+              <GamePiece
+                key={idx}
+                connection={connection}
+                selections={selections}
+                setSelections={setSelections}
+                correct={correct}
+              />
+            ))}
+          </div>
+          <button onClick={handleSubmit}>Submit</button>
+        </>
+      )}
+      {incorrect === 4 && <h1>Game Over!!!</h1>}
     </>
   );
 }
