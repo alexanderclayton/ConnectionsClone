@@ -1,28 +1,40 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TConnection } from "../App";
 
 interface IGamePieceProps {
   connection: TConnection;
   selections: TConnection[];
+  setSelections: React.Dispatch<React.SetStateAction<TConnection[]>>;
+  correct: boolean;
 }
 
-export const GamePiece = ({ connection, selections }: IGamePieceProps) => {
+export const GamePiece = ({
+  connection,
+  selections,
+  setSelections,
+  correct,
+}: IGamePieceProps) => {
   const [selected, setSelected] = useState(false);
 
   const handleSelect = () => {
     if (!selected) {
       if (selections.length < 4) {
-        selections.push(connection);
+        setSelections((prevSelections) => [...prevSelections, connection]);
         setSelected(true);
       } else {
         console.log("User has already selected 4 items");
       }
     } else {
-      const index = selections.indexOf(connection);
-      selections.splice(index, 1);
+      setSelections((prevSelections) =>
+        prevSelections.filter((sel) => sel !== connection),
+      );
       setSelected(false);
     }
   };
+
+  useEffect(() => {
+    setSelected(false);
+  }, [correct]);
 
   return (
     <div

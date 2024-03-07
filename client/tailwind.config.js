@@ -7,7 +7,8 @@ export default {
   theme: {
     extend: {
       aspectRatio: {
-        "4/1": "4 / 1"
+        "4/1": "4 / 1",
+        "8/1": "8 / 1"
       }
     },
   },
