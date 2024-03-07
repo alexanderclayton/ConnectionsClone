@@ -40,3 +40,21 @@ itemD: string
 "itemD": "string"
 }
 }
+
+type TUser = {
+username: string
+email: string
+record: TScore[]
+
+}
+
+type TScore = {
+date: string
+score: number
+}
+
+{
+"username": "string"
+"email": "string"
+"record": [{score}, {score}, {score}]
+}

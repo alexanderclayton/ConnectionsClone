@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from config import app, mongo
-from models import Game
+from models import Game, User
 
 @app.route("/", methods=["GET"])
 def get_app():
@@ -29,6 +29,21 @@ def add_game():
         new_game = Game.from_json(data)
         mongo.db.games.insert_one(new_game.to_json())
         return jsonify({"message": f"Added game for {data['date']}"}), 201
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route("/add_user", methods=["POST"])
+def add_user():
+    try:
+        data = request.json
+        user_fields = ['username', 'email', 'record']
+        if not all(key in data for key in user_fields):
+            raise ValueError({"error": "User doesn't include all required fields"})
+        new_user = User.from_json(data)
+        mongo.db.users.insert_one(new_user.to_json())
+        return jsonify({"message": f"Added user {data['username']}"})
     except ValueError as ve:
         return jsonify({"error": str(ve)}), 400
     except Exception as e:

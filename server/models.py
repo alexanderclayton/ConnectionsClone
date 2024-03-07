@@ -52,3 +52,43 @@ class Group:
             'itemC': self.item_c,
             'itemD': self.item_d
         }
+    
+class User:
+    def __init__(self, username, email, record):
+        self.username = username
+        self.email = email
+        self.record = record
+
+    @staticmethod
+    def from_json(json_data):
+        return User(
+            username=json_data['username'],
+            email=json_data['email'],
+            record=[Score.from_json(score_data) for score_data in json_data['record']]
+        )
+    
+    def to_json(self):
+        return {
+            'username': self.username,
+            'email': self.email,
+            'record': [score.to_json() for score in self.record]
+        }
+    
+class Score:
+    def __init__(self, date, score):
+        self.date = date
+        self.score = score
+
+    @staticmethod
+    def from_json(json_data):
+        return Score(
+            date=json_data['date'],
+            score=json_data['score']
+        )
+    
+    def to_json(self):
+        return {
+            'date': self.date,
+            'score': self.score
+        }
+    
