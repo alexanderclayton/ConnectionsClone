@@ -23,7 +23,22 @@ export type TConnection = {
   connection: string;
 };
 
+export type TUser = {
+  username: string;
+  email: string;
+  password: string;
+  record: TScore[];
+};
+
+type TScore = {
+  date: string;
+  score: number;
+};
+
 function App() {
+  const [user, setUser] = useState<TUser | undefined>(undefined);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [game, setGame] = useState<TGame | undefined>(undefined);
   const [connections, setConnections] = useState<TConnection[] | undefined>(
     undefined,
@@ -154,6 +169,29 @@ function App() {
     }
   };
 
+  const fetchUser = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/get_user", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch user");
+      }
+      const fetchedUser = await response.json();
+      setUser(fetchedUser);
+    } catch (error: unknown) {
+      console.error("Error fetching user:", error);
+    }
+  };
+
   useEffect(() => {
     formatDate();
   }, []);
@@ -178,62 +216,89 @@ function App() {
 
   return (
     <>
-      {incorrect < 4 && (
+      {!user && (
         <>
-          <div className="aspect-4/1 w-full p-4">
-            <button
-              onClick={() => console.log(incorrect)}
-              className="h-full w-full rounded-lg"
-            >
-              Test
-            </button>
-            <div className="flex items-center">
-              <h3>{4 - incorrect} guesses left</h3>
-              <div
-                className={`m-4 h-8 w-8 rounded-full border ${incorrect > 0 && "bg-red-600"}`}
-              />
-              <div
-                className={`m-4 h-8 w-8 rounded-full border ${incorrect > 1 && "bg-red-600"}`}
-              />
-              <div
-                className={`m-4 h-8 w-8 rounded-full border ${incorrect > 2 && "bg-red-600"}`}
-              />
-              <div className={`m-4 h-8 w-8 rounded-full border`} />
-            </div>
-            {solutions.length > 0 && (
-              <div className="w-full">
-                {solutions.map((solution, idx) => (
-                  <div
-                    key={idx}
-                    className="aspect-8/1 mt-4 flex w-full flex-col items-center justify-center rounded-xl bg-red-300"
-                  >
-                    <h3>{solution?.groupName}</h3>
-                    <div className="flex justify-around">
-                      <p>{solution?.itemA}</p>
-                      <p>{solution?.itemB}</p>
-                      <p>{solution?.itemC}</p>
-                      <p>{solution?.itemD}</p>
-                    </div>
-                  </div>
-                ))}{" "}
-              </div>
-            )}
+          <div className="flex h-full w-full flex-col items-center justify-center">
+            <label htmlFor="username">Username:</label>
+            <input
+              type="text"
+              id="username"
+              className="border"
+              onChange={(e) => setUsername(e.target.value)}
+              value={username}
+            />
+            <label htmlFor="password">Password:</label>
+            <input
+              type="text"
+              id="password"
+              className="border"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+            />
+            <button onClick={fetchUser}>Test</button>
           </div>
-          <div className="grid grid-cols-4">
-            {connections?.map((connection, idx) => (
-              <GamePiece
-                key={idx}
-                connection={connection}
-                selections={selections}
-                setSelections={setSelections}
-                correct={correct}
-              />
-            ))}
-          </div>
-          <button onClick={handleSubmit}>Submit</button>
         </>
       )}
-      {incorrect === 4 && <h1>Game Over!!!</h1>}
+      {user && (
+        <>
+          {incorrect < 4 && (
+            <>
+              <div className="aspect-4/1 w-full p-4">
+                <button
+                  onClick={() => console.log(incorrect)}
+                  className="h-full w-full rounded-lg"
+                >
+                  Test
+                </button>
+                <div className="flex items-center">
+                  <h3>{4 - incorrect} guesses left</h3>
+                  <div
+                    className={`m-4 h-8 w-8 rounded-full border ${incorrect > 0 && "bg-red-600"}`}
+                  />
+                  <div
+                    className={`m-4 h-8 w-8 rounded-full border ${incorrect > 1 && "bg-red-600"}`}
+                  />
+                  <div
+                    className={`m-4 h-8 w-8 rounded-full border ${incorrect > 2 && "bg-red-600"}`}
+                  />
+                  <div className={`m-4 h-8 w-8 rounded-full border`} />
+                </div>
+                {solutions.length > 0 && (
+                  <div className="w-full">
+                    {solutions.map((solution, idx) => (
+                      <div
+                        key={idx}
+                        className="aspect-8/1 mt-4 flex w-full flex-col items-center justify-center rounded-xl bg-red-300"
+                      >
+                        <h3>{solution?.groupName}</h3>
+                        <div className="flex justify-around">
+                          <p>{solution?.itemA}</p>
+                          <p>{solution?.itemB}</p>
+                          <p>{solution?.itemC}</p>
+                          <p>{solution?.itemD}</p>
+                        </div>
+                      </div>
+                    ))}{" "}
+                  </div>
+                )}
+              </div>
+              <div className="grid grid-cols-4">
+                {connections?.map((connection, idx) => (
+                  <GamePiece
+                    key={idx}
+                    connection={connection}
+                    selections={selections}
+                    setSelections={setSelections}
+                    correct={correct}
+                  />
+                ))}
+              </div>
+              <button onClick={handleSubmit}>Submit</button>
+            </>
+          )}
+          {incorrect === 4 && <h1>Game Over!!!</h1>}
+        </>
+      )}
     </>
   );
 }
