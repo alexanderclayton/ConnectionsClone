@@ -23,7 +23,7 @@ export type TConnection = {
   connection: string;
 };
 
-type TUser = {
+export type TUser = {
   username: string;
   email: string;
   password: string;
