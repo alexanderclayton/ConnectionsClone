@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TConnection } from "../App";
+import { TConnection } from "../pages/Game";
 
 interface IGamePieceProps {
   connection: TConnection;
