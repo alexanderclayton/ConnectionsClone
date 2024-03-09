@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { GamePiece } from "../components/GamePiece";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context";
 
 type TGame = {
   _id: string;
@@ -38,6 +39,7 @@ type TScore = {
 
 export const Game = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [game, setGame] = useState<TGame | undefined>(undefined);
   const [connections, setConnections] = useState<TConnection[] | undefined>(
     undefined,
@@ -192,6 +194,9 @@ export const Game = () => {
 
   return (
     <>
+      <div className="flex w-full justify-end">
+        <button onClick={logout}>Logout</button>
+      </div>
       {incorrect < 4 && (
         <>
           <div className="aspect-4/1 w-full p-4">
