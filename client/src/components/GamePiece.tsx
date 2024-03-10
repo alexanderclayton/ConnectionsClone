@@ -39,7 +39,7 @@ export const GamePiece = ({
   return (
     <div
       id={connection.groupName}
-      className={`m-4 flex aspect-square items-center justify-center rounded-lg border hover:cursor-pointer ${selected && "bg-blue-300"}`}
+      className={`m-4 flex aspect-square items-center justify-center rounded-xl border transition-colors duration-300 hover:cursor-pointer ${selected ? "bg-blue-300" : "hover:bg-blue-100"}`}
       onClick={handleSelect}
     >
       {connection.connection}
