@@ -195,18 +195,23 @@ export const Game = () => {
   return (
     <>
       <div className="flex w-full justify-end">
-        <button onClick={logout}>Logout</button>
+        <button
+          onClick={logout}
+          className="rounded-md bg-blue-500 px-4 py-2 text-white"
+        >
+          Logout
+        </button>
       </div>
       {incorrect < 4 && (
         <>
           <div className="aspect-4/1 w-full p-4">
             <button
               onClick={() => navigate("/")}
-              className="h-full w-full rounded-lg"
+              className="h-full w-full rounded-lg bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring focus:ring-gray-400"
             >
               Test
             </button>
-            <div className="flex items-center">
+            <div className="mt-2 flex items-center">
               <h3>{4 - incorrect} guesses left</h3>
               <div
                 className={`m-4 h-8 w-8 rounded-full border ${incorrect > 0 && "bg-red-600"}`}
@@ -220,7 +225,7 @@ export const Game = () => {
               <div className={`m-4 h-8 w-8 rounded-full border`} />
             </div>
             {solutions.length > 0 && (
-              <div className="w-full">
+              <div className="mt-4 w-full">
                 {solutions.map((solution, idx) => (
                   <div
                     key={idx}
@@ -249,10 +254,17 @@ export const Game = () => {
               />
             ))}
           </div>
-          <button onClick={handleSubmit}>Submit</button>
+          <button
+            onClick={handleSubmit}
+            className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-400"
+          >
+            Submit
+          </button>
         </>
       )}
-      {incorrect === 4 && <h1>Game Over!!!</h1>}
+      {incorrect === 4 && (
+        <h1 className="mt-4 text-3xl text-red-600">Game Over!!!</h1>
+      )}
     </>
   );
 };
