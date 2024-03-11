@@ -1,7 +1,8 @@
-from flask import jsonify, request
+from flask import jsonify, request, session
 from flask_bcrypt import generate_password_hash, check_password_hash
 from config import app, mongo
 from models import Game, User
+from datetime import datetime
 
 @app.route("/", methods=["GET"])
 def get_app():
@@ -34,22 +35,6 @@ def add_game():
         return jsonify({"error": str(ve)}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-@app.route("/get_user", methods=["POST"])
-def get_user():
-    data = request.json
-    username = data.get('username')
-    password = data.get('password')
-    user = mongo.db.users.find_one({'username': username})
-    if (user):
-        hashed_password = user.get('password')
-        if (check_password_hash(hashed_password, password)):
-            user['_id'] = str(user['_id'])
-            return jsonify(user), 200
-        else:
-            return jsonify({"message": "Incorrect password"}), 401
-    else:
-        return jsonify({"message": "No user with that username found"}), 404
     
 @app.route("/add_user", methods=["POST"])
 def add_user():
@@ -68,4 +53,35 @@ def add_user():
         return jsonify({"error": str(ve)}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+last_activity = {}
+
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+    user = mongo.db.users.find_one({ 'username': username})
+    if (user):
+        hashed_password = user.get('password')
+        if (check_password_hash(hashed_password, password)):
+            session['user'] = username
+            last_activity[session['user']] = datetime.now()
+            return jsonify({ "message": f"logged in as {username}"}), 200
+        else:
+            return jsonify({"message": "Incorrect password"}), 401
+    else:
+        return jsonify({"message": "No user with that username found"}), 404
     
+@app.route("/logout", methods=["GET"])
+def logout():
+    session.pop('user', None)
+    return jsonify({ "message": "User successfully logged out"}), 200
+
+def check_session_expiration():
+    now = datetime.now()
+    for user, last_activity_time in last_activity.items():
+        if ((now - last_activity_time) > app.config["PERMANENT_SESSION_LIFETIME"]):
+            session.pop('user', None)
+            last_activity.pop(user, None)
+
