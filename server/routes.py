@@ -1,5 +1,6 @@
 from flask import jsonify, request, session
 from flask_bcrypt import generate_password_hash, check_password_hash
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from config import app, mongo
 from models import Game, User
 from datetime import datetime
@@ -9,6 +10,7 @@ def get_app():
     return jsonify({"message": "Hello World"})
 
 @app.route("/game/<date>", methods=["GET"])
+@jwt_required()
 def get_game(date):
     game = mongo.db.games.find_one({'date': date})
     if (game):
@@ -65,23 +67,13 @@ def login():
     if (user):
         hashed_password = user.get('password')
         if (check_password_hash(hashed_password, password)):
-            session['user'] = username
-            last_activity[session['user']] = datetime.now()
-            return jsonify({ "message": f"logged in as {username}"}), 200
+            additional_claims = {"username": user['username'], "email": user['email'], "record": user['record']}
+            access_token = create_access_token(identity=username, additional_claims=additional_claims)
+            return jsonify(access_token=access_token), 200
         else:
             return jsonify({"message": "Incorrect password"}), 401
     else:
         return jsonify({"message": "No user with that username found"}), 404
     
-@app.route("/logout", methods=["GET"])
-def logout():
-    session.pop('user', None)
-    return jsonify({ "message": "User successfully logged out"}), 200
 
-def check_session_expiration():
-    now = datetime.now()
-    for user, last_activity_time in last_activity.items():
-        if ((now - last_activity_time) > app.config["PERMANENT_SESSION_LIFETIME"]):
-            session.pop('user', None)
-            last_activity.pop(user, None)
-
+# Logout handled on client-side
