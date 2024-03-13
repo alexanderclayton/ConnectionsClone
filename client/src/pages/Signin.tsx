@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAuth } from "../context";
 
 export const Signin = () => {
-  const { user, login } = useAuth();
+  const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -26,7 +26,9 @@ export const Signin = () => {
         value={password}
       />
       <button onClick={() => login(username, password)}>Test</button>
-      <button onClick={() => console.log(user)}>Test</button>
+      <button onClick={() => console.log(username, password)}>
+        Test Values
+      </button>
     </div>
   );
 };
