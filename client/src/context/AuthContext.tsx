@@ -1,12 +1,10 @@
-import React, { createContext, useContext, useState } from "react";
-import { TUser } from "../pages";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 type TAuthContext = {
-  user: TUser | undefined;
+  token: string | null;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
-  loading: boolean;
 };
 
 interface IAuthProviderProps {
@@ -14,29 +12,24 @@ interface IAuthProviderProps {
 }
 
 const AuthContext = createContext<TAuthContext>({
-  user: undefined,
+  token: null,
   login: async () => {},
   logout: () => {},
-  loading: false,
 });
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be usd within an AuthProvider");
-  }
-  return context;
-};
 
 export const AuthProvider = ({ children }: IAuthProviderProps) => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<TUser | undefined>(undefined);
-  const [loading, setLoading] = useState(false);
+  const [token, setToken_] = useState<string | null>(
+    localStorage.getItem("token"),
+  );
+
+  const setToken = (newToken: string | null) => {
+    setToken_(newToken);
+  };
 
   const login = async (username: string, password: string) => {
-    setLoading(true);
     try {
-      const response = await fetch("http://127.0.0.1:5000/get_user", {
+      const response = await fetch("http://127.0.0.1:5000/login", {
         method: "POST",
         mode: "cors",
         headers: {
@@ -48,36 +41,46 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
         }),
       });
       if (!response.ok) {
-        throw new Error("Failed to fetch user");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Login Failed!");
+      } else {
+        const data = await response.json();
+        const { access_token } = data;
+        setToken(access_token);
+        navigate("/game");
       }
-      const fetchedUser = await response.json();
-      setUser(fetchedUser);
-      setLoading(false);
-      navigate("/game");
     } catch (error: unknown) {
-      setLoading(false);
-      console.error("Error fetching user:", error);
-      throw new Error("Failed to authenticate user");
+      console.error(error);
     }
   };
 
   const logout = () => {
-    setUser(undefined);
+    localStorage.removeItem("token");
+    setToken(null);
   };
 
-  const authContextValue: TAuthContext = {
-    user,
-    login,
-    logout,
-    loading,
-  };
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem("token", token);
+    } else {
+      localStorage.removeItem("token");
+    }
+  }, [token]);
+
+  const contextValue = useMemo(
+    () => ({
+      token,
+      login,
+      logout,
+    }),
+    [token],
+  );
 
   return (
-    <AuthContext.Provider value={authContextValue}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
 
-//Wrap auth protected components with <AuthProvider></AuthProvider>
-//import useAuth() into components to use the user, login, logout, loading values as { user, login, logout, loading } = useAuth()
+export const useAuth = (): TAuthContext => {
+  return useContext(AuthContext);
+};

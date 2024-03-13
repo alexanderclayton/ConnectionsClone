@@ -39,7 +39,7 @@ type TScore = {
 
 export const Game = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { token, logout } = useAuth();
   const [game, setGame] = useState<TGame | undefined>(undefined);
   const [connections, setConnections] = useState<TConnection[] | undefined>(
     undefined,
@@ -157,6 +157,7 @@ export const Game = () => {
           mode: "cors",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         },
       );
