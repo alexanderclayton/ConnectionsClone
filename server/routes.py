@@ -12,12 +12,17 @@ def get_app():
 @app.route("/game/<date>", methods=["GET"])
 @jwt_required()
 def get_game(date):
-    game = mongo.db.games.find_one({'date': date})
-    if (game):
-        game['_id'] = str(game['_id'])
-        return jsonify(game), 200
+    username = get_jwt_identity()
+    user_date = mongo.db.users.find_one({'username': username, 'record': {'$elemMatch': {'date': date}}})
+    if (user_date):
+        return jsonify({"message": "User has already played today's game"}), 200
     else:
-        return jsonify({"message": "No game found"}), 404
+        game = mongo.db.games.find_one({'date': date})
+        if (game):
+            game['_id'] = str(game['_id'])
+            return jsonify(game), 200
+        else:
+            return jsonify({"message": "No game found"}), 404
     
 @app.route("/add_game", methods=["POST"])
 def add_game():
