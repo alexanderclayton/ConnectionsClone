@@ -265,7 +265,7 @@ export const Game = () => {
                 {solutions.map((solution, idx) => (
                   <div
                     key={idx}
-                    className="mt-4 flex aspect-8/1 w-full flex-col items-center justify-center rounded-xl bg-red-300"
+                    className={`mt-4 flex aspect-8/1 w-full flex-col items-center justify-center rounded-xl ${solution?.difficulty === "easy" ? "bg-yellow-300" : solution?.difficulty === "medium" ? "bg-green-400" : solution?.difficulty === "hard" ? "bg-blue-400" : "bg-purple-400"}`}
                   >
                     <h3>{solution?.groupName}</h3>
                     <div className="flex justify-around">

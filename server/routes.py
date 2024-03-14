@@ -26,7 +26,7 @@ def add_game():
         game_fields = ['date', 'groupEasy', 'groupMedium', 'groupHard', 'groupExpert']
         if not all(key in data for key in game_fields):
             raise ValueError("Game is missing valid date and/or group(s)")
-        group_fields = ['groupName', 'itemA', 'itemB', 'itemC', 'itemD']
+        group_fields = ['groupName', 'itemA', 'itemB', 'itemC', 'itemD', 'difficulty']
         for group_name in ['groupEasy', 'groupMedium', 'groupHard', 'groupExpert']:
             if not all(key in data[group_name] for key in group_fields):
                 raise ValueError(f"Not all game data provided for {group_name}")
