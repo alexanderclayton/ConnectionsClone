@@ -76,4 +76,26 @@ def login():
         return jsonify({"message": "No user with that username found"}), 404
     
 
-# Logout handled on client-side
+@app.route("/add_record", methods=["PUT"])
+@jwt_required()
+def add_record():
+    try:
+        data = request.json
+        record_fields = ['date', 'score']
+        if not all(key in data for key in record_fields):
+                raise ValueError({"error": "Request must include both date and score"})
+        date = data.get('date')
+        score = data.get('score')
+        username = get_jwt_identity()
+        my_query = { "username": username}
+        new_record = {"date": date, "score": score}
+        result = mongo.db.users.update_one(my_query, {"$push": {"record": new_record}})
+        if result.modified_count:
+            return jsonify({"message": "User record updated"}), 200
+        else:
+            return jsonify({"message": "Failed to update user record"}), 404
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
