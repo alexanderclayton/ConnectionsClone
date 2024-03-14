@@ -44,7 +44,6 @@ class Group:
             item_c=json_data['itemC'],
             item_d=json_data['itemD'],
             difficulty=json_data['difficulty']
-
         )
     
     def to_json(self):
