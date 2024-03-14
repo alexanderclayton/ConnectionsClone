@@ -1,9 +1,8 @@
-from flask import jsonify, request, session
+from flask import jsonify, request
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from config import app, mongo
 from models import Game, User
-from datetime import datetime
 
 @app.route("/", methods=["GET"])
 def get_app():
@@ -15,7 +14,7 @@ def get_game(date):
     username = get_jwt_identity()
     user_date = mongo.db.users.find_one({'username': username, 'record': {'$elemMatch': {'date': date}}})
     if (user_date):
-        return jsonify({"message": "User has already played today's game"}), 200
+        return jsonify({"message": "User has already played today's game"}), 202
     else:
         game = mongo.db.games.find_one({'date': date})
         if (game):
@@ -50,18 +49,21 @@ def add_user():
         user_fields = ['username', 'email', 'password', 'record']
         if not all(key in data for key in user_fields):
             raise ValueError({"error": "User doesn't include all required fields"})
-        password = data.get('password')
-        hashed_password = generate_password_hash(password).decode('utf-8')
-        data['password'] = hashed_password
-        new_user = User.from_json(data)
-        mongo.db.users.insert_one(new_user.to_json())
-        return jsonify({"message": f"Added user {data['username']}"})
+        email = data.get('email')
+        existing_email = mongo.db.users.find_one({'email': email})
+        if (existing_email):
+            return jsonify({"message": "This email has already been used"}), 409
+        else:
+            password = data.get('password')
+            hashed_password = generate_password_hash(password).decode('utf-8')
+            data['password'] = hashed_password
+            new_user = User.from_json(data)
+            mongo.db.users.insert_one(new_user.to_json())
+            return jsonify({"message": f"Added user {data['username']}"}), 201
     except ValueError as ve:
         return jsonify({"error": str(ve)}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-last_activity = {}
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -96,7 +98,7 @@ def add_record():
         new_record = {"date": date, "score": score}
         result = mongo.db.users.update_one(my_query, {"$push": {"record": new_record}})
         if result.modified_count:
-            return jsonify({"message": "User record updated"}), 200
+            return jsonify({"message": "User record updated"}), 201
         else:
             return jsonify({"message": "Failed to update user record"}), 404
     except ValueError as ve:
