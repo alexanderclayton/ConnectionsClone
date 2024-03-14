@@ -17,11 +17,13 @@ type TGroup = {
   itemB: string;
   itemC: string;
   itemD: string;
+  difficulty: string;
 };
 
 export type TConnection = {
   groupName: string;
   connection: string;
+  difficulty: string;
 };
 
 export type TUser = {
@@ -60,10 +62,11 @@ export const Game = () => {
     for (const groupName of groups) {
       const group = game[groupName];
       const groupConnections = Object.keys(group)
-        .filter((key) => key !== "groupName")
+        .filter((key) => key !== "groupName" && key !== "difficulty")
         .map((item) => ({
           groupName: group.groupName,
           connection: group[item as keyof TGroup],
+          difficulty: group.difficulty,
         }));
       mappedConnections.push(...groupConnections);
     }
@@ -93,6 +96,7 @@ export const Game = () => {
             itemB: selections[1].connection,
             itemC: selections[2].connection,
             itemD: selections[3].connection,
+            difficulty: selections[0].difficulty,
           });
           if (connections !== undefined) {
             const updatedConnections = connections.filter(
@@ -238,7 +242,7 @@ export const Game = () => {
         <>
           <div className="aspect-4/1 w-full p-4">
             <button
-              onClick={() => console.log(solutions.length)}
+              onClick={() => console.log(solutions)}
               className="h-full w-full rounded-lg bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring focus:ring-gray-400"
             >
               Test
@@ -294,9 +298,10 @@ export const Game = () => {
           </button>
         </>
       )}
-      {incorrect === 4 && (
-        <h1 className="mt-4 text-3xl text-red-600">Game Over!!!</h1>
-      )}
+      {incorrect === 4 ||
+        (solutions.length === 4 && (
+          <h1 className="mt-4 text-3xl text-red-600">Game Over!!!</h1>
+        ))}
     </>
   );
 };
