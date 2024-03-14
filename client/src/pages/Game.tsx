@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { GamePiece } from "../components/GamePiece";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context";
 
 type TGame = {
@@ -38,7 +37,6 @@ type TScore = {
 };
 
 export const Game = () => {
-  const navigate = useNavigate();
   const { token, logout } = useAuth();
   const [game, setGame] = useState<TGame | undefined>(undefined);
   const [connections, setConnections] = useState<TConnection[] | undefined>(
@@ -171,6 +169,29 @@ export const Game = () => {
     }
   };
 
+  const addRecord = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/add_record", {
+        method: "PUT",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          date: currentDate,
+          score: 5 - incorrect,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update record");
+      }
+      console.log("updated record");
+    } catch (error: unknown) {
+      console.error("Error adding record:", error);
+    }
+  };
+
   useEffect(() => {
     formatDate();
   }, []);
@@ -193,6 +214,16 @@ export const Game = () => {
     }
   }, [correct]);
 
+  useEffect(() => {
+    if (solutions.length === 4) {
+      console.log("game over correct");
+      addRecord();
+    } else if (incorrect === 4) {
+      console.log("game over incorrect");
+      addRecord();
+    }
+  }, [solutions, incorrect]);
+
   return (
     <>
       <div className="flex w-full justify-end">
@@ -207,7 +238,7 @@ export const Game = () => {
         <>
           <div className="aspect-4/1 w-full p-4">
             <button
-              onClick={() => navigate("/")}
+              onClick={() => console.log(solutions.length)}
               className="h-full w-full rounded-lg bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring focus:ring-gray-400"
             >
               Test
