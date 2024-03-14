@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { GamePiece } from "../components/GamePiece";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context";
 
 type TGame = {
