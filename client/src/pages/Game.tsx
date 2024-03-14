@@ -41,6 +41,7 @@ type TScore = {
 export const Game = () => {
   const { token, logout } = useAuth();
   const [game, setGame] = useState<TGame | undefined>(undefined);
+  const [isPlayed, setIsPlayed] = useState(false);
   const [connections, setConnections] = useState<TConnection[] | undefined>(
     undefined,
   );
@@ -166,8 +167,12 @@ export const Game = () => {
       if (!response.ok) {
         throw new Error("Failed to fetch game");
       }
-      const fetchedGame = await response.json();
-      setGame(fetchedGame);
+      const responseData = await response.json();
+      if (responseData.message === "User has already played today's game") {
+        setIsPlayed(true);
+      } else {
+        setGame(responseData);
+      }
     } catch (error: unknown) {
       console.error("Error fetching game:", error);
     }
@@ -230,78 +235,87 @@ export const Game = () => {
 
   return (
     <>
-      <div className="flex w-full justify-end">
-        <button
-          onClick={logout}
-          className="rounded-md bg-blue-500 px-4 py-2 text-white"
-        >
-          Logout
-        </button>
-      </div>
-      {incorrect < 4 && (
+      {isPlayed && (
+        <div>
+          <h2>User Has Already Played Today's Game</h2>
+        </div>
+      )}
+      {!isPlayed && (
         <>
-          <div className="aspect-4/1 w-full p-4">
+          <div className="flex w-full justify-end">
             <button
-              onClick={() => console.log(solutions)}
-              className="h-full w-full rounded-lg bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring focus:ring-gray-400"
+              onClick={logout}
+              className="rounded-md bg-blue-500 px-4 py-2 text-white"
             >
-              Test
+              Logout
             </button>
-            <div className="mt-2 flex items-center">
-              <h3>{4 - incorrect} guesses left</h3>
-              <div
-                className={`m-4 h-8 w-8 rounded-full border ${incorrect > 0 && "bg-red-600"}`}
-              />
-              <div
-                className={`m-4 h-8 w-8 rounded-full border ${incorrect > 1 && "bg-red-600"}`}
-              />
-              <div
-                className={`m-4 h-8 w-8 rounded-full border ${incorrect > 2 && "bg-red-600"}`}
-              />
-              <div className={`m-4 h-8 w-8 rounded-full border`} />
-            </div>
-            {solutions.length > 0 && (
-              <div className="mt-4 w-full">
-                {solutions.map((solution, idx) => (
+          </div>
+          {incorrect < 4 && (
+            <>
+              <div className="aspect-4/1 w-full p-4">
+                <button
+                  onClick={() => console.log(solutions)}
+                  className="h-full w-full rounded-lg bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring focus:ring-gray-400"
+                >
+                  Test
+                </button>
+                <div className="mt-2 flex items-center">
+                  <h3>{4 - incorrect} guesses left</h3>
                   <div
-                    key={idx}
-                    className={`mt-4 flex aspect-8/1 w-full flex-col items-center justify-center rounded-xl ${solution?.difficulty === "easy" ? "bg-yellow-300" : solution?.difficulty === "medium" ? "bg-green-400" : solution?.difficulty === "hard" ? "bg-blue-400" : "bg-purple-400"}`}
-                  >
-                    <h3>{solution?.groupName}</h3>
-                    <div className="flex justify-around">
-                      <p>{solution?.itemA}</p>
-                      <p>{solution?.itemB}</p>
-                      <p>{solution?.itemC}</p>
-                      <p>{solution?.itemD}</p>
-                    </div>
+                    className={`m-4 h-8 w-8 rounded-full border ${incorrect > 0 && "bg-red-600"}`}
+                  />
+                  <div
+                    className={`m-4 h-8 w-8 rounded-full border ${incorrect > 1 && "bg-red-600"}`}
+                  />
+                  <div
+                    className={`m-4 h-8 w-8 rounded-full border ${incorrect > 2 && "bg-red-600"}`}
+                  />
+                  <div className={`m-4 h-8 w-8 rounded-full border`} />
+                </div>
+                {solutions.length > 0 && (
+                  <div className="mt-4 w-full">
+                    {solutions.map((solution, idx) => (
+                      <div
+                        key={idx}
+                        className={`mt-4 flex aspect-8/1 w-full flex-col items-center justify-center rounded-xl ${solution?.difficulty === "easy" ? "bg-yellow-300" : solution?.difficulty === "medium" ? "bg-green-400" : solution?.difficulty === "hard" ? "bg-blue-400" : "bg-purple-400"}`}
+                      >
+                        <h3>{solution?.groupName}</h3>
+                        <div className="flex justify-around">
+                          <p>{solution?.itemA}</p>
+                          <p>{solution?.itemB}</p>
+                          <p>{solution?.itemC}</p>
+                          <p>{solution?.itemD}</p>
+                        </div>
+                      </div>
+                    ))}{" "}
                   </div>
-                ))}{" "}
+                )}
               </div>
-            )}
-          </div>
-          <div className="grid grid-cols-4">
-            {connections?.map((connection, idx) => (
-              <GamePiece
-                key={idx}
-                connection={connection}
-                selections={selections}
-                setSelections={setSelections}
-                correct={correct}
-              />
+              <div className="grid grid-cols-4">
+                {connections?.map((connection, idx) => (
+                  <GamePiece
+                    key={idx}
+                    connection={connection}
+                    selections={selections}
+                    setSelections={setSelections}
+                    correct={correct}
+                  />
+                ))}
+              </div>
+              <button
+                onClick={handleSubmit}
+                className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-400"
+              >
+                Submit
+              </button>
+            </>
+          )}
+          {incorrect === 4 ||
+            (solutions.length === 4 && (
+              <h1 className="mt-4 text-3xl text-red-600">Game Over!!!</h1>
             ))}
-          </div>
-          <button
-            onClick={handleSubmit}
-            className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-400"
-          >
-            Submit
-          </button>
         </>
       )}
-      {incorrect === 4 ||
-        (solutions.length === 4 && (
-          <h1 className="mt-4 text-3xl text-red-600">Game Over!!!</h1>
-        ))}
     </>
   );
 };
