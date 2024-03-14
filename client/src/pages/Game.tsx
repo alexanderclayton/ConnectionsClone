@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { GamePiece } from "../components/GamePiece";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context";
 
 type TGame = {
@@ -18,11 +17,13 @@ type TGroup = {
   itemB: string;
   itemC: string;
   itemD: string;
+  difficulty: string;
 };
 
 export type TConnection = {
   groupName: string;
   connection: string;
+  difficulty: string;
 };
 
 export type TUser = {
@@ -38,7 +39,6 @@ type TScore = {
 };
 
 export const Game = () => {
-  const navigate = useNavigate();
   const { token, logout } = useAuth();
   const [game, setGame] = useState<TGame | undefined>(undefined);
   const [connections, setConnections] = useState<TConnection[] | undefined>(
@@ -62,10 +62,11 @@ export const Game = () => {
     for (const groupName of groups) {
       const group = game[groupName];
       const groupConnections = Object.keys(group)
-        .filter((key) => key !== "groupName")
+        .filter((key) => key !== "groupName" && key !== "difficulty")
         .map((item) => ({
           groupName: group.groupName,
           connection: group[item as keyof TGroup],
+          difficulty: group.difficulty,
         }));
       mappedConnections.push(...groupConnections);
     }
@@ -95,6 +96,7 @@ export const Game = () => {
             itemB: selections[1].connection,
             itemC: selections[2].connection,
             itemD: selections[3].connection,
+            difficulty: selections[0].difficulty,
           });
           if (connections !== undefined) {
             const updatedConnections = connections.filter(
@@ -171,6 +173,29 @@ export const Game = () => {
     }
   };
 
+  const addRecord = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/add_record", {
+        method: "PUT",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          date: currentDate,
+          score: 5 - incorrect,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update record");
+      }
+      console.log("updated record");
+    } catch (error: unknown) {
+      console.error("Error adding record:", error);
+    }
+  };
+
   useEffect(() => {
     formatDate();
   }, []);
@@ -193,6 +218,16 @@ export const Game = () => {
     }
   }, [correct]);
 
+  useEffect(() => {
+    if (solutions.length === 4) {
+      console.log("game over correct");
+      addRecord();
+    } else if (incorrect === 4) {
+      console.log("game over incorrect");
+      addRecord();
+    }
+  }, [solutions, incorrect]);
+
   return (
     <>
       <div className="flex w-full justify-end">
@@ -207,7 +242,7 @@ export const Game = () => {
         <>
           <div className="aspect-4/1 w-full p-4">
             <button
-              onClick={() => navigate("/")}
+              onClick={() => console.log(solutions)}
               className="h-full w-full rounded-lg bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring focus:ring-gray-400"
             >
               Test
@@ -230,7 +265,7 @@ export const Game = () => {
                 {solutions.map((solution, idx) => (
                   <div
                     key={idx}
-                    className="mt-4 flex aspect-8/1 w-full flex-col items-center justify-center rounded-xl bg-red-300"
+                    className={`mt-4 flex aspect-8/1 w-full flex-col items-center justify-center rounded-xl ${solution?.difficulty === "easy" ? "bg-yellow-300" : solution?.difficulty === "medium" ? "bg-green-400" : solution?.difficulty === "hard" ? "bg-blue-400" : "bg-purple-400"}`}
                   >
                     <h3>{solution?.groupName}</h3>
                     <div className="flex justify-around">
@@ -263,9 +298,10 @@ export const Game = () => {
           </button>
         </>
       )}
-      {incorrect === 4 && (
-        <h1 className="mt-4 text-3xl text-red-600">Game Over!!!</h1>
-      )}
+      {incorrect === 4 ||
+        (solutions.length === 4 && (
+          <h1 className="mt-4 text-3xl text-red-600">Game Over!!!</h1>
+        ))}
     </>
   );
 };
