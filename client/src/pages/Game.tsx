@@ -41,6 +41,7 @@ type TScore = {
 export const Game = () => {
   const { token, logout } = useAuth();
   const [game, setGame] = useState<TGame | undefined>(undefined);
+  // const [allUsers, setAllUsers] = useState<TUser[] | undefined>(undefined);
   const [isPlayed, setIsPlayed] = useState(false);
   const [connections, setConnections] = useState<TConnection[] | undefined>(
     undefined,
@@ -200,6 +201,30 @@ export const Game = () => {
       console.error("Error adding record:", error);
     }
   };
+
+  // const fetchAllUsers = async () => {
+  //   try {
+  //     const response = await fetch("http://127.0.0.1:5000/get_users", {
+  //       method: "GET",
+  //       mode: "cors",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch users");
+  //     }
+  //     const responseData = await response.json();
+  //     let userArray = responseData.users;
+  //     setAllUsers(userArray);
+  //   } catch (error: unknown) {
+  //     console.error("Error fetching users:", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchAllUsers();
+  // }, []);
 
   useEffect(() => {
     formatDate();

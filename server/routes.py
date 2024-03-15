@@ -64,6 +64,15 @@ def add_user():
         return jsonify({"error": str(ve)}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route("/get_users", methods=["GET"])
+def get_users():
+    users_collection = mongo.db.users
+    users_list = []
+    for user in users_collection.find():
+        user["_id"] = str(user["_id"])
+        users_list.append(user)
+    return jsonify({"users": users_list})
 
 @app.route("/login", methods=["POST"])
 def login():
