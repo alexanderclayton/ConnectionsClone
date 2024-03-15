@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Game, Home, Signin } from "./pages";
+import { CreateAccount, Game, Home, Signin } from "./pages";
 import { AuthProvider, ProtectedRoute } from "./context";
 
 function App() {
@@ -10,6 +10,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/signin" element={<Signin />} />
+            <Route path="/createaccount" element={<CreateAccount />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/game" element={<Game />} />
             </Route>
