@@ -47,6 +47,14 @@ export const Leaderboard = () => {
     }
   };
 
+  const leaderboardScore = (user: TUser) => {
+    let totalScore = 0;
+    user.record.forEach((record) => {
+      totalScore += record.score;
+    });
+    return totalScore;
+  };
+
   useEffect(() => {
     fetchAllUsers();
   }, []);
@@ -58,7 +66,42 @@ export const Leaderboard = () => {
   }, [allUsers]);
 
   return (
-    <div>
+    <div className="w-[40%]">
+      <h2 className="flex w-full items-center justify-center bg-blue-200 text-2xl font-bold">
+        Leaderboard
+      </h2>
+      {allUsers && (
+        <table className="w-full border-collapse border">
+          <thead>
+            <tr className="bg-gray-200">
+              <th className="border border-gray-300 px-4 py-2 text-center">
+                Rank
+              </th>
+              <th className="border border-gray-300 px-4 py-2 text-center">
+                Username
+              </th>
+              <th className="border border-gray-300 px-4 py-2 text-center">
+                Score
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {allUsers.map((user, idx) => (
+              <tr key={idx} className="bg-white">
+                <td className="border border-gray-300 px-4 py-2 text-center">
+                  {idx + 1}
+                </td>
+                <td className="border border-gray-300 px-4 py-2 text-center">
+                  {user.username}
+                </td>
+                <td className="border border-gray-300 px-4 py-2 text-center">
+                  {leaderboardScore(user)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
       <button onClick={() => console.log(rankedUsers)}>Leaderboard</button>
     </div>
   );
