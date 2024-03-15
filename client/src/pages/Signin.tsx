@@ -1,6 +1,7 @@
 //import//
 import { useState } from "react";
 import { useAuth } from "../context";
+import { Leaderboard } from "../components";
 
 export const Signin = () => {
   const { login } = useAuth();
@@ -29,6 +30,7 @@ export const Signin = () => {
       <button onClick={() => console.log(username, password)}>
         Test Values
       </button>
+      <Leaderboard />
     </div>
   );
 };
