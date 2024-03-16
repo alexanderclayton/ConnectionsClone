@@ -56,6 +56,12 @@ export const Signin = () => {
       >
         Create Account
       </button>
+      <button
+        className="rounded-sm bg-black font-bold text-white hover:cursor-pointer"
+        onClick={() => navigate("/")}
+      >
+        Return Home
+      </button>
     </div>
   );
 };

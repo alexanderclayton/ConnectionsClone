@@ -41,7 +41,6 @@ type TScore = {
 export const Game = () => {
   const { token, logout } = useAuth();
   const [game, setGame] = useState<TGame | undefined>(undefined);
-  // const [allUsers, setAllUsers] = useState<TUser[] | undefined>(undefined);
   const [isPlayed, setIsPlayed] = useState(false);
   const [connections, setConnections] = useState<TConnection[] | undefined>(
     undefined,
@@ -50,6 +49,7 @@ export const Game = () => {
   const [solutions, setSolutions] = useState<(TGroup | undefined)[]>([]);
   const [selections, setSelections] = useState<TConnection[]>([]);
   const [currentDate, setCurrentDate] = useState("");
+  const [guesses, setGuesses] = useState<string[]>([]);
   const [correct, setCorrect] = useState(false);
   const [incorrect, setIncorrect] = useState(0);
 
@@ -100,6 +100,10 @@ export const Game = () => {
             itemD: selections[3].connection,
             difficulty: selections[0].difficulty,
           });
+          setGuesses((prevGuesses) => [
+            ...prevGuesses,
+            selections[0].difficulty,
+          ]);
           if (connections !== undefined) {
             const updatedConnections = connections.filter(
               (connection) => !selections.includes(connection),
@@ -110,10 +114,11 @@ export const Game = () => {
           setCorrect(!correct);
           console.log("correct");
         } else {
+          setGuesses((prevGuesses) => [...prevGuesses, "incorrect"]);
           setSelections([]);
           setCorrect(!correct);
           setIncorrect(incorrect + 1);
-          console.log("wrong");
+          console.log("incorrect");
         }
       }
     } else {
@@ -202,30 +207,6 @@ export const Game = () => {
     }
   };
 
-  // const fetchAllUsers = async () => {
-  //   try {
-  //     const response = await fetch("http://127.0.0.1:5000/get_users", {
-  //       method: "GET",
-  //       mode: "cors",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-  //     if (!response.ok) {
-  //       throw new Error("Failed to fetch users");
-  //     }
-  //     const responseData = await response.json();
-  //     let userArray = responseData.users;
-  //     setAllUsers(userArray);
-  //   } catch (error: unknown) {
-  //     console.error("Error fetching users:", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchAllUsers();
-  // }, []);
-
   useEffect(() => {
     formatDate();
   }, []);
@@ -279,7 +260,7 @@ export const Game = () => {
             <>
               <div className="aspect-4/1 w-full p-4">
                 <button
-                  onClick={() => console.log(solutions)}
+                  onClick={() => console.log(guesses)}
                   className="h-full w-full rounded-lg bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring focus:ring-gray-400"
                 >
                   Test
@@ -337,7 +318,25 @@ export const Game = () => {
           )}
           {incorrect === 4 ||
             (solutions.length === 4 && (
-              <h1 className="mt-4 text-3xl text-red-600">Game Over!!!</h1>
+              <div>
+                <h1 className="mt-4 text-3xl text-red-600">Game Over!!!</h1>
+                {guesses?.map((guess, idx) => (
+                  <div key={idx} className="flex">
+                    <div
+                      className={`my-1 aspect-square w-6 rounded-lg ${guess === "easy" ? "bg-yellow-300" : guess === "medium" ? "bg-green-400" : guess === "hard" ? "bg-blue-400" : guess === "expert" ? "bg-purple-400" : "bg-gray-600"}`}
+                    />
+                    <div
+                      className={`my-1 aspect-square w-6 rounded-lg ${guess === "easy" ? "bg-yellow-300" : guess === "medium" ? "bg-green-400" : guess === "hard" ? "bg-blue-400" : guess === "expert" ? "bg-purple-400" : "bg-gray-600"}`}
+                    />
+                    <div
+                      className={`my-1 aspect-square w-6 rounded-lg ${guess === "easy" ? "bg-yellow-300" : guess === "medium" ? "bg-green-400" : guess === "hard" ? "bg-blue-400" : guess === "expert" ? "bg-purple-400" : "bg-gray-600"}`}
+                    />
+                    <div
+                      className={`my-1 aspect-square w-6 rounded-lg ${guess === "easy" ? "bg-yellow-300" : guess === "medium" ? "bg-green-400" : guess === "hard" ? "bg-blue-400" : guess === "expert" ? "bg-purple-400" : "bg-gray-600"}`}
+                    />
+                  </div>
+                ))}
+              </div>
             ))}
         </>
       )}
