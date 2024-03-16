@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { CreateAccount, Game, Home, Signin } from "./pages";
+import { CreateAccount, Game, Home, Postgame, Signin } from "./pages";
 import { AuthProvider, ProtectedRoute } from "./context";
 
 function App() {
@@ -13,6 +13,7 @@ function App() {
             <Route path="/createaccount" element={<CreateAccount />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/game" element={<Game />} />
+              <Route path="/postgame" element={<Postgame />} />
             </Route>
           </Routes>
         </AuthProvider>
