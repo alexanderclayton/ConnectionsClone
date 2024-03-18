@@ -2,7 +2,7 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { IoMdSettings, IoMdClose } from "react-icons/io";
 import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import { useState } from "react";
-import { HowToPlay } from ".";
+import { HowToPlay, Settings } from ".";
 
 export const Header = () => {
   const [howTo, setHowTo] = useState(false);
@@ -24,6 +24,18 @@ export const Header = () => {
           onClick={() => setHowTo(!howTo)}
         />
       </div>
+      {settings && (
+        <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-black bg-opacity-50 p-4">
+          <div className="relative rounded-lg bg-white p-8">
+            <IoMdClose
+              size={35}
+              onClick={() => setSettings(false)}
+              className="absolute right-2 top-2 hover:cursor-pointer"
+            />
+            <Settings />
+          </div>
+        </div>
+      )}
       {howTo && (
         <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-black bg-opacity-50 p-4">
           <div className="relative rounded-lg bg-white p-8">
