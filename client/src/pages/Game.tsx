@@ -52,6 +52,8 @@ export const Game = () => {
   const [guesses, setGuesses] = useState<string[]>([]);
   const [correct, setCorrect] = useState(false);
   const [incorrect, setIncorrect] = useState(0);
+  const [resultMessage, setResultMessage] = useState("");
+  const [tomorrow, setTomorrow] = useState("");
 
   const getConnections = (game: TGame) => {
     let mappedConnections: TConnection[] = [];
@@ -207,6 +209,41 @@ export const Game = () => {
     }
   };
 
+  const handleResultMessage = () => {
+    if (incorrect === 0) {
+      setResultMessage("Perfect!");
+    } else if (incorrect === 1) {
+      setResultMessage("Almost Perfect!");
+    } else if (incorrect === 2) {
+      setResultMessage("Well Done!");
+    } else if (incorrect === 3) {
+      setResultMessage("Barely got it!");
+    } else {
+      setResultMessage("Better luck next time!");
+    }
+  };
+
+  const countdownToTomorrow = () => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    const timeRemaining = tomorrow.getTime() - today.getTime();
+    let hours: string | number = Math.floor(
+      (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+    );
+    hours = hours < 10 ? "0" + hours.toString() : hours.toString();
+    let minutes: string | number = Math.floor(
+      (timeRemaining % (1000 * 60 * 60)) / (1000 * 60),
+    );
+    minutes = minutes < 10 ? "0" + minutes.toString() : minutes.toString();
+    let seconds: string | number = Math.floor(
+      (timeRemaining % (1000 * 60)) / 1000,
+    );
+    seconds = seconds < 10 ? "0" + seconds.toString() : seconds.toString();
+    setTomorrow(`Next game in ${hours}:${minutes}:${seconds}`);
+  };
+
   useEffect(() => {
     formatDate();
   }, []);
@@ -233,11 +270,19 @@ export const Game = () => {
     if (solutions.length === 4) {
       console.log("game over correct");
       addRecord();
+      handleResultMessage();
     } else if (incorrect === 4) {
       console.log("game over incorrect");
       addRecord();
+      handleResultMessage();
     }
   }, [solutions, incorrect]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      countdownToTomorrow();
+    }, 1000);
+  }, [tomorrow]);
 
   return (
     <>
@@ -319,7 +364,7 @@ export const Game = () => {
           {incorrect === 4 ||
             (solutions.length === 4 && (
               <div>
-                <h1 className="mt-4 text-3xl text-red-600">Game Over!!!</h1>
+                <h1 className="mt-4 text-3xl">{resultMessage}</h1>
                 {guesses?.map((guess, idx) => (
                   <div key={idx} className="flex">
                     <div
@@ -336,6 +381,7 @@ export const Game = () => {
                     />
                   </div>
                 ))}
+                <h2 className="mt-4 text-3xl">{tomorrow}</h2>
               </div>
             ))}
         </>
