@@ -1,3 +1,5 @@
+export * from './Header'
+export * from './HowToPlay'
 export * from './GamePiece'
 export * from './Leaderboard'
-export * from './HowToPlay'
+export * from './GameResult'
