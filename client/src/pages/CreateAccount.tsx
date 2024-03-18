@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { TUser } from ".";
 import { useAuth } from "../context";
+import { TUser } from "../types";
 
 export const CreateAccount = () => {
   const { login } = useAuth();
