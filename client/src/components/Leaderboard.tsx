@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TUser } from "../pages";
+import { TUser } from "../types";
 
 export const Leaderboard = () => {
   const [allUsers, setAllUsers] = useState<TUser[] | undefined>(undefined);
