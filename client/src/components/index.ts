@@ -1,4 +1,5 @@
 export * from './Header'
+export * from './GameMenu'
 export * from './Settings'
 export * from './HowToPlay'
 export * from './GamePiece'
