@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const Home = () => {
@@ -38,6 +39,11 @@ export const Home = () => {
     const year = currentDate.getFullYear();
     return `${day} ${month} ${date}, ${year}`;
   };
+
+  useEffect(() => {
+    localStorage.removeItem("token");
+  }, []);
+
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center bg-purple-300">
       <h1 className="text-3xl font-bold">Connections Clone</h1>

@@ -1,42 +1,17 @@
 import { useEffect, useState } from "react";
 import { GamePiece } from "../components/GamePiece";
 import { useAuth } from "../context";
-
-type TGame = {
-  _id: string;
-  date: string;
-  groupEasy: TGroup;
-  groupMedium: TGroup;
-  groupHard: TGroup;
-  groupExpert: TGroup;
-};
-
-type TGroup = {
-  groupName: string;
-  itemA: string;
-  itemB: string;
-  itemC: string;
-  itemD: string;
-  difficulty: string;
-};
-
-export type TConnection = {
-  groupName: string;
-  connection: string;
-  difficulty: string;
-};
-
-export type TUser = {
-  username: string;
-  email: string;
-  password: string;
-  record: TScore[];
-};
-
-type TScore = {
-  date: string;
-  score: number;
-};
+import { TConnection, TGame, TGroup } from "../types";
+import {
+  addRecord,
+  countdownToTomorrow,
+  fetchGame,
+  formatDate,
+  getConnections,
+  handleCorrect,
+  handleGuess,
+  handleResultMessage,
+} from "../helpers";
 
 export const Game = () => {
   const { token, logout } = useAuth();
@@ -55,232 +30,43 @@ export const Game = () => {
   const [resultMessage, setResultMessage] = useState("");
   const [tomorrow, setTomorrow] = useState("");
 
-  const getConnections = (game: TGame) => {
-    let mappedConnections: TConnection[] = [];
-    const groups = [
-      "groupEasy",
-      "groupMedium",
-      "groupHard",
-      "groupExpert",
-    ] as const;
-    for (const groupName of groups) {
-      const group = game[groupName];
-      const groupConnections = Object.keys(group)
-        .filter((key) => key !== "groupName" && key !== "difficulty")
-        .map((item) => ({
-          groupName: group.groupName,
-          connection: group[item as keyof TGroup],
-          difficulty: group.difficulty,
-        }));
-      mappedConnections.push(...groupConnections);
-    }
-    shuffleConnections(mappedConnections);
-  };
-
-  const shuffleConnections = (connections: TConnection[]) => {
-    for (let i = connections.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [connections[i], connections[j]] = [connections[j], connections[i]];
-    }
-    setConnections(connections);
-  };
-
-  const handleSubmit = () => {
-    if (selections.length > 0) {
-      if (selections.length < 4) {
-        console.log("Must select 4 solutions!");
-      } else {
-        const group: string[] = [];
-        selections.map((selection) => group.push(selection.groupName));
-        const groupName = group[0];
-        if (group.every((element) => element === groupName)) {
-          setSolution({
-            groupName: selections[0].groupName,
-            itemA: selections[0].connection,
-            itemB: selections[1].connection,
-            itemC: selections[2].connection,
-            itemD: selections[3].connection,
-            difficulty: selections[0].difficulty,
-          });
-          setGuesses((prevGuesses) => [
-            ...prevGuesses,
-            selections[0].difficulty,
-          ]);
-          if (connections !== undefined) {
-            const updatedConnections = connections.filter(
-              (connection) => !selections.includes(connection),
-            );
-            setConnections(updatedConnections);
-          }
-          setSelections([]);
-          setCorrect(!correct);
-          console.log("correct");
-        } else {
-          setGuesses((prevGuesses) => [...prevGuesses, "incorrect"]);
-          setSelections([]);
-          setCorrect(!correct);
-          setIncorrect(incorrect + 1);
-          console.log("incorrect");
-        }
-      }
-    } else {
-      console.log("Nothing selected!!");
-    }
-  };
-
-  const handleCorrect = () => {
-    setSolutions((prevSolutions) => [...prevSolutions, solution]);
-    setSolution(undefined);
-  };
-
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  const formatDate = () => {
-    const today = new Date();
-    let date = today.getDate().toString();
-    const month = months[today.getMonth()].toString();
-    const year = today.getFullYear().toString();
-    if (parseInt(date) < 10) {
-      date = "0" + date;
-    }
-    setCurrentDate(date + month + year);
-  };
-
-  const fetchGame = async () => {
-    try {
-      const response = await fetch(
-        `http://127.0.0.1:5000/game/${currentDate}`,
-        {
-          method: "GET",
-          mode: "cors",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch game");
-      }
-      const responseData = await response.json();
-      if (responseData.message === "User has already played today's game") {
-        setIsPlayed(true);
-      } else {
-        setGame(responseData);
-      }
-    } catch (error: unknown) {
-      console.error("Error fetching game:", error);
-    }
-  };
-
-  const addRecord = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:5000/add_record", {
-        method: "PUT",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          date: currentDate,
-          score: 5 - incorrect,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to update record");
-      }
-      console.log("updated record");
-    } catch (error: unknown) {
-      console.error("Error adding record:", error);
-    }
-  };
-
-  const handleResultMessage = () => {
-    if (incorrect === 0) {
-      setResultMessage("Perfect!");
-    } else if (incorrect === 1) {
-      setResultMessage("Almost Perfect!");
-    } else if (incorrect === 2) {
-      setResultMessage("Well Done!");
-    } else if (incorrect === 3) {
-      setResultMessage("Barely got it!");
-    } else {
-      setResultMessage("Better luck next time!");
-    }
-  };
-
-  const countdownToTomorrow = () => {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0);
-    const timeRemaining = tomorrow.getTime() - today.getTime();
-    let hours: string | number = Math.floor(
-      (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-    );
-    hours = hours < 10 ? "0" + hours.toString() : hours.toString();
-    let minutes: string | number = Math.floor(
-      (timeRemaining % (1000 * 60 * 60)) / (1000 * 60),
-    );
-    minutes = minutes < 10 ? "0" + minutes.toString() : minutes.toString();
-    let seconds: string | number = Math.floor(
-      (timeRemaining % (1000 * 60)) / 1000,
-    );
-    seconds = seconds < 10 ? "0" + seconds.toString() : seconds.toString();
-    setTomorrow(`Next game in ${hours}:${minutes}:${seconds}`);
-  };
-
   useEffect(() => {
-    formatDate();
+    formatDate(setCurrentDate);
   }, []);
 
   useEffect(() => {
     if (currentDate !== "") {
-      fetchGame();
+      fetchGame(currentDate, token, setIsPlayed, setGame);
     }
   }, [currentDate]);
 
   useEffect(() => {
     if (game !== undefined) {
-      getConnections(game);
+      getConnections(game, setConnections);
     }
   }, [game]);
 
   useEffect(() => {
     if (solution !== undefined) {
-      handleCorrect();
+      handleCorrect(solution, setSolution, setSolutions);
     }
   }, [correct]);
 
   useEffect(() => {
     if (solutions.length === 4) {
       console.log("game over correct");
-      addRecord();
-      handleResultMessage();
+      addRecord(currentDate, token, incorrect);
+      handleResultMessage(incorrect, setResultMessage);
     } else if (incorrect === 4) {
       console.log("game over incorrect");
-      addRecord();
-      handleResultMessage();
+      addRecord(currentDate, token, incorrect);
+      handleResultMessage(incorrect, setResultMessage);
     }
   }, [solutions, incorrect]);
 
   useEffect(() => {
     setTimeout(() => {
-      countdownToTomorrow();
+      countdownToTomorrow(setTomorrow);
     }, 1000);
   }, [tomorrow]);
 
@@ -354,7 +140,20 @@ export const Game = () => {
                 ))}
               </div>
               <button
-                onClick={handleSubmit}
+                onClick={() =>
+                  handleGuess(
+                    selections,
+                    connections,
+                    correct,
+                    incorrect,
+                    setConnections,
+                    setSolution,
+                    setGuesses,
+                    setSelections,
+                    setCorrect,
+                    setIncorrect,
+                  )
+                }
                 className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-400"
               >
                 Submit
