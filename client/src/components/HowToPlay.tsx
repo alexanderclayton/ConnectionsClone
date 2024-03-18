@@ -1,5 +1,3 @@
-//import//
-
 export const HowToPlay = () => {
   return (
     <div className="flex flex-col">
