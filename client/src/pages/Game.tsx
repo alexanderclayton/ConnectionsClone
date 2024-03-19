@@ -11,7 +11,7 @@ export const Game = () => {
   const [isPlayed, setIsPlayed] = useState(false);
   const [solutions, setSolutions] = useState<(TGroup | undefined)[]>([]);
   const [currentDate, setCurrentDate] = useState("");
-  const [guesses, setGuesses] = useState<string[]>([]);
+  const [guesses, setGuesses] = useState<string[][]>([]);
   const [incorrect, setIncorrect] = useState(0);
 
   useEffect(() => {
