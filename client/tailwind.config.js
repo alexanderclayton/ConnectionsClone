@@ -8,6 +8,7 @@ export default {
     extend: {
       aspectRatio: {
         "4/1": "4 / 1",
+        "6/1": "6 / 1",
         "8/1": "8 / 1"
       }
     },

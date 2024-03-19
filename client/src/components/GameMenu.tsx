@@ -1,6 +1,10 @@
 import { RiGameLine } from "react-icons/ri";
+import { useAuth } from "../context";
+import { useNavigate } from "react-router-dom";
 
 export const GameMenu = () => {
+  const { token, logout } = useAuth();
+  const navigate = useNavigate();
   return (
     <div className="mt-6 flex flex-col items-start">
       <h2 className="my-1 px-4 font-bold">Cloned NYT Games</h2>
@@ -88,9 +92,22 @@ export const GameMenu = () => {
         <button className="mx-4 w-[50%] rounded-sm bg-black text-xs font-bold text-white">
           SUBSCRIBE
         </button>
-        <button className="mr-4 w-[50%] rounded-sm border border-black text-xs font-bold">
-          LOG IN
-        </button>
+        {!token && (
+          <button
+            className="mr-4 w-[50%] rounded-sm border border-black text-xs font-bold"
+            onClick={() => navigate("/signin")}
+          >
+            LOG IN
+          </button>
+        )}
+        {token && (
+          <button
+            className="mr-4 w-[50%] rounded-sm border border-black text-xs font-bold"
+            onClick={logout}
+          >
+            LOG OUT
+          </button>
+        )}
       </div>
     </div>
   );
