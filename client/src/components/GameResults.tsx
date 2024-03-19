@@ -7,12 +7,15 @@ import {
 import { TGroup } from "../types";
 import { useAuth } from "../context";
 import { IoMdClose } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 
 interface IGameResultsProps {
   solutions: (TGroup | undefined)[];
   currentDate: string;
   guesses: string[][];
   incorrect: number;
+  showResults: boolean;
+  setShowResults: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const GameResults = ({
@@ -20,11 +23,13 @@ export const GameResults = ({
   currentDate,
   guesses,
   incorrect,
+  showResults,
+  setShowResults,
 }: IGameResultsProps) => {
   const { token } = useAuth();
+  const navigate = useNavigate()
   const [resultMessage, setResultMessage] = useState("");
   const [tomorrow, setTomorrow] = useState("");
-  const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
     if (solutions.length === 4) {
@@ -84,7 +89,7 @@ export const GameResults = ({
                 <button className="m-1 w-[50%] rounded-full bg-black px-2 py-3 font-bold text-white">
                   Share Your Results
                 </button>
-                <button className="m-1 w-[50%] rounded-full bg-black px-2 py-3 font-bold text-white">
+                <button className="m-1 w-[50%] rounded-full bg-black px-2 py-3 font-bold text-white" onClick={() =>navigate('/postgame')}>
                   Leaderboard
                 </button>
               </div>

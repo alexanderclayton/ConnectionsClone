@@ -10,6 +10,7 @@ interface IGameBoardProps {
   setSolutions: React.Dispatch<React.SetStateAction<(TGroup | undefined)[]>>;
   setIncorrect: React.Dispatch<React.SetStateAction<number>>;
   setGuesses: React.Dispatch<React.SetStateAction<string[][]>>;
+  setShowResults: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const GameBoard = ({
@@ -19,6 +20,7 @@ export const GameBoard = ({
   setSolutions,
   setIncorrect,
   setGuesses,
+  setShowResults,
 }: IGameBoardProps) => {
   const [connections, setConnections] = useState<TConnection[] | undefined>(
     undefined,
@@ -51,7 +53,10 @@ export const GameBoard = ({
           />
         ))}
       </div>
-      <Mistakes incorrect={incorrect} />
+      {solutions.length !== 4 && incorrect !== 4 && (
+        <Mistakes incorrect={incorrect} />
+      )}
+
       {connections && (
         <GameButtons
           connections={connections}
@@ -59,6 +64,7 @@ export const GameBoard = ({
           correct={correct}
           incorrect={incorrect}
           deselect={deselect}
+          solutions={solutions}
           setConnections={setConnections}
           setSelections={setSelections}
           setCorrect={setCorrect}
@@ -66,6 +72,7 @@ export const GameBoard = ({
           setDeselect={setDeselect}
           setSolutions={setSolutions}
           setGuesses={setGuesses}
+          setShowResults={setShowResults}
         />
       )}
     </>
