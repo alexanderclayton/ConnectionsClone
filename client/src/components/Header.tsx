@@ -31,7 +31,7 @@ export const Header = () => {
       </div>
       {menu && (
         <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-black bg-opacity-50 p-4">
-          <div className="scrollbar relative max-h-screen w-72 overflow-y-auto rounded-lg bg-white">
+          <div className="scrollbar relative max-h-screen w-96 overflow-y-auto rounded-lg bg-white">
             <IoMdClose
               size={35}
               onClick={() => setMenu(false)}

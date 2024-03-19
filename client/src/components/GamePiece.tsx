@@ -5,6 +5,7 @@ interface IGamePieceProps {
   connection: TConnection;
   selections: TConnection[];
   setSelections: React.Dispatch<React.SetStateAction<TConnection[]>>;
+  deselect: boolean;
   correct: boolean;
 }
 
@@ -12,6 +13,7 @@ export const GamePiece = ({
   connection,
   selections,
   setSelections,
+  deselect,
   correct,
 }: IGamePieceProps) => {
   const [selected, setSelected] = useState(false);
@@ -34,12 +36,12 @@ export const GamePiece = ({
 
   useEffect(() => {
     setSelected(false);
-  }, [correct]);
+  }, [correct, deselect]);
 
   return (
     <div
       id={connection.groupName}
-      className={`m-4 flex aspect-square items-center justify-center rounded-xl border transition-colors duration-300 hover:cursor-pointer ${selected ? "bg-blue-300" : "hover:bg-blue-100"}`}
+      className={`m-1 flex aspect-square items-center justify-center rounded-xl border text-center transition-colors duration-300 hover:cursor-pointer ${selected ? "bg-blue-300" : "bg-gray-200 hover:bg-blue-100"}`}
       onClick={handleSelect}
     >
       {connection.connection}

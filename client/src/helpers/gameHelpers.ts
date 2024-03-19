@@ -56,7 +56,7 @@ export const getConnections = (
 };
 
 //Shuffle array of connections into random order
-const shuffleConnections = (
+export const shuffleConnections = (
     connections: TConnection[], 
     setConnections: React.Dispatch<React.SetStateAction<TConnection[] | undefined>>
 ) => {
@@ -65,6 +65,15 @@ const shuffleConnections = (
       [connections[i], connections[j]] = [connections[j], connections[i]];
     }
     setConnections(connections);
+};
+
+export const deselectAll = (
+  deselect: boolean,
+  setSelections: React.Dispatch<React.SetStateAction<TConnection[]>>, 
+  setDeselect: React.Dispatch<React.SetStateAction<boolean>>
+) => {
+  setSelections([]);
+  setDeselect(!deselect);
 };
 
 //Submits guess, handles answer according to accuracy
