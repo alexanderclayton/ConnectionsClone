@@ -9,7 +9,7 @@ interface IGameBoardProps {
   incorrect: number;
   setSolutions: React.Dispatch<React.SetStateAction<(TGroup | undefined)[]>>;
   setIncorrect: React.Dispatch<React.SetStateAction<number>>;
-  setGuesses: React.Dispatch<React.SetStateAction<string[]>>;
+  setGuesses: React.Dispatch<React.SetStateAction<string[][]>>;
 }
 
 export const GameBoard = ({

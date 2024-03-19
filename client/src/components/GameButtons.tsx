@@ -21,7 +21,7 @@ interface IGameButtonsProps {
   setIncorrect: React.Dispatch<React.SetStateAction<number>>;
   setDeselect: React.Dispatch<React.SetStateAction<boolean>>;
   setSolutions: React.Dispatch<React.SetStateAction<(TGroup | undefined)[]>>;
-  setGuesses: React.Dispatch<React.SetStateAction<string[]>>;
+  setGuesses: React.Dispatch<React.SetStateAction<string[][]>>;
 }
 
 export const GameButtons = ({

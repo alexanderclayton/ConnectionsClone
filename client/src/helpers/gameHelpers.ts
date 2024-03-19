@@ -84,7 +84,7 @@ export const handleGuess = (
     incorrect: number,
     setConnections: React.Dispatch<React.SetStateAction<TConnection[] | undefined>>,
     setSolution: React.Dispatch<React.SetStateAction<TGroup | undefined>>,
-    setGuesses: React.Dispatch<React.SetStateAction<string[]>>,
+    setGuesses: React.Dispatch<React.SetStateAction<string[][]>>,
     setSelections: React.Dispatch<React.SetStateAction<TConnection[]>>,
     setCorrect: React.Dispatch<React.SetStateAction<boolean>>,
     setIncorrect: React.Dispatch<React.SetStateAction<number>>
@@ -107,7 +107,7 @@ export const handleGuess = (
           });
           setGuesses((prevGuesses) => [
             ...prevGuesses,
-            selections[0].difficulty,
+            [selections[0].difficulty, selections[1].difficulty, selections[2].difficulty, selections[3].difficulty]
           ]);
           if (connections !== undefined) {
             const updatedConnections = connections.filter(
@@ -119,7 +119,10 @@ export const handleGuess = (
           setCorrect(!correct);
           console.log("correct");
         } else {
-          setGuesses((prevGuesses) => [...prevGuesses, "incorrect"]);
+          setGuesses((prevGuesses) => [
+            ...prevGuesses,
+            [selections[0].difficulty, selections[1].difficulty, selections[2].difficulty, selections[3].difficulty]
+          ]);
           setSelections([]);
           setCorrect(!correct);
           setIncorrect(incorrect + 1);
@@ -180,5 +183,5 @@ export const countdownToTomorrow = (
       (timeRemaining % (1000 * 60)) / 1000,
     );
     seconds = seconds < 10 ? "0" + seconds.toString() : seconds.toString();
-    setTomorrow(`Next game in ${hours}:${minutes}:${seconds}`);
+    setTomorrow(`${hours}:${minutes}:${seconds}`);
 };

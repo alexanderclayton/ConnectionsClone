@@ -25,7 +25,7 @@ export const Header = () => {
         />
         <HiOutlineQuestionMarkCircle
           size={35}
-          className="mr-12 hover:cursor-pointer"
+          className="mr-8 hover:cursor-pointer"
           onClick={() => setHowTo(!howTo)}
         />
       </div>
