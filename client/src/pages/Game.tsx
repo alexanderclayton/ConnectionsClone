@@ -13,6 +13,7 @@ export const Game = () => {
   const [currentDate, setCurrentDate] = useState("");
   const [guesses, setGuesses] = useState<string[][]>([]);
   const [incorrect, setIncorrect] = useState(0);
+  const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
     formatDate(setCurrentDate);
@@ -40,6 +41,7 @@ export const Game = () => {
                 setSolutions={setSolutions}
                 setIncorrect={setIncorrect}
                 setGuesses={setGuesses}
+                setShowResults={setShowResults}
               />
             )}
             {incorrect === 4 ||
@@ -49,6 +51,8 @@ export const Game = () => {
                   currentDate={currentDate}
                   guesses={guesses}
                   incorrect={incorrect}
+                  showResults={showResults}
+                  setShowResults={setShowResults}
                 />
               ))}
           </>
