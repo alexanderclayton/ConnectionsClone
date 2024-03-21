@@ -36,12 +36,12 @@ export const GameBoard = ({
   }, [game]);
 
   return (
-    <>
-      <div className="w-full p-4">
-        <h2 className="text-center">Create four groups of four!</h2>
+    <div className="flex w-full max-w-96 flex-col items-center justify-center">
+      <div className="w-full px-2">
+        <h2 className="mb-4 mt-12 text-center">Create four groups of four!</h2>
         {solutions.length > 0 && <Solutions solutions={solutions} />}
       </div>
-      <div className="grid grid-cols-4 p-1">
+      <div className="grid w-full grid-cols-4 p-1">
         {connections?.map((connection, idx) => (
           <GamePiece
             key={idx}
@@ -75,6 +75,6 @@ export const GameBoard = ({
           setShowResults={setShowResults}
         />
       )}
-    </>
+    </div>
   );
 };
