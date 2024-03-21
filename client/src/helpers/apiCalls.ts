@@ -56,7 +56,12 @@ export const addRecord = async (
       if (!response.ok) {
         throw new Error("Failed to update record");
       }
-      console.log("updated record");
+      const responseData = await response.json()
+      if (responseData.error === "User has already recorded score for today's date") {
+        console.log("duplicate record")
+      } else {
+        console.log("updated record");
+      }
     } catch (error: unknown) {
       console.error("Error adding record:", error);
     }

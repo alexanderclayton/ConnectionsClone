@@ -29,21 +29,25 @@ export const GameResults = ({
   const { token } = useAuth();
   const navigate = useNavigate();
   const [resultMessage, setResultMessage] = useState("");
+  const [addResult, setAddResult] = useState(false);
   const [tomorrow, setTomorrow] = useState("");
 
   useEffect(() => {
-    if (solutions.length === 4) {
-      console.log("game over correct");
-      addRecord(currentDate, token, incorrect);
-      handleResultMessage(incorrect, setResultMessage);
-      setShowResults(true);
-    } else if (incorrect === 4) {
-      console.log("game over incorrect");
-      addRecord(currentDate, token, incorrect);
-      handleResultMessage(incorrect, setResultMessage);
-      setShowResults(true);
+    if (addResult !== true) {
+      setAddResult(true);
     }
-  }, [solutions, incorrect]);
+  }, []);
+
+  useEffect(() => {
+    if (addResult === true) {
+      if (solutions.length === 4 || incorrect === 4) {
+        console.log("game over");
+        addRecord(currentDate, token, incorrect);
+        handleResultMessage(incorrect, setResultMessage);
+        setShowResults(true);
+      }
+    }
+  }, [addResult]);
 
   useEffect(() => {
     setTimeout(() => {

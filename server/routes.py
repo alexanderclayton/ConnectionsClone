@@ -104,6 +104,12 @@ def add_record():
         score = data.get('score')
         username = get_jwt_identity()
         my_query = { "username": username}
+        user = mongo.db.users.find_one(my_query)
+        if (user) is None:
+            return jsonify({ "error": "User not found"}), 404
+        existing_record = next((r for r in user.get('record', []) if r.get('date') == date), None)
+        if (existing_record):
+            return jsonify({ "error": "User has already recorded score for today's date"}), 409
         new_record = {"date": date, "score": score}
         result = mongo.db.users.update_one(my_query, {"$push": {"record": new_record}})
         if result.modified_count:
