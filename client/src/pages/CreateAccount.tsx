@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../context";
 import { TUser } from "../types";
+import { VscEye } from "react-icons/vsc";
 
 export const CreateAccount = () => {
   const { login } = useAuth();
@@ -15,6 +16,7 @@ export const CreateAccount = () => {
       },
     ],
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -57,19 +59,20 @@ export const CreateAccount = () => {
   };
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center">
-      <form onSubmit={handleSubmit} className="flex flex-col">
-        <label htmlFor="username" className="text-sm font-bold">
-          Username:
+    <div className="flex h-full w-full flex-col items-center justify-center p-3">
+      <h2 className="mt-4 text-3xl">Create your account</h2>
+      <form onSubmit={handleSubmit} className="flex w-full max-w-96 flex-col">
+        <label htmlFor="username" className="mt-6 text-sm font-bold">
+          Username
         </label>
         <input
           type="text"
           id="username"
           value={newUser.username}
           onChange={handleChange}
-          className="rounded-sm border"
+          className="mt-1 h-12 rounded-sm border border-black pl-4 focus:outline-none"
         />
-        <label htmlFor="email" className="text-sm font-bold">
+        <label htmlFor="email" className="mt-6 text-sm font-bold">
           Email:
         </label>
         <input
@@ -77,22 +80,31 @@ export const CreateAccount = () => {
           id="email"
           value={newUser.email}
           onChange={handleChange}
-          className="rounded-sm border"
+          className="mt-1 h-12 rounded-sm border border-black pl-4 focus:outline-none"
         />
-        <label htmlFor="password" className="text-sm font-bold">
+        <label htmlFor="password" className="mt-6 text-sm font-bold">
           Password:
         </label>
-        <input
-          type="password"
-          id="password"
-          value={newUser.password}
-          onChange={handleChange}
-          className="rounded-sm border"
-        />
+        <div className="mt-1 flex h-12 items-center justify-around rounded-sm border border-black">
+          <input
+            type={showPassword ? "text" : "password"}
+            id="password"
+            value={newUser.password}
+            onChange={handleChange}
+            className="h-full w-full pl-4 focus:outline-none"
+          />
+          <VscEye
+            size={25}
+            className="mx-4 text-gray-500 hover:cursor-pointer"
+            onMouseDown={() => setShowPassword(true)}
+            onMouseUp={() => setShowPassword(false)}
+            onMouseLeave={() => setShowPassword(false)}
+          />
+        </div>
         <input
           type="submit"
           value="Create Account"
-          className="rounded-sm bg-black font-bold text-white hover:cursor-pointer"
+          className="mt-4 h-12 rounded-sm bg-black font-bold text-white hover:cursor-pointer"
         />
       </form>
     </div>

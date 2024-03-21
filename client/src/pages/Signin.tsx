@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useAuth } from "../context";
 import { useNavigate } from "react-router-dom";
+import { VscEye } from "react-icons/vsc";
 
 export const Signin = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (
     e: React.FormEvent,
@@ -37,13 +39,22 @@ export const Signin = () => {
         <label htmlFor="password" className="mt-4 text-sm font-bold">
           Password
         </label>
-        <input
-          type="text"
-          id="password"
-          className="mt-1 h-12 rounded-sm border border-black pl-4 focus:outline-none"
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
-        />
+        <div className="mt-1 flex h-12 items-center justify-around rounded-sm border border-black">
+          <input
+            type={showPassword ? "text" : "password"}
+            id="password"
+            className="h-full w-full pl-4 focus:outline-none"
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+          />
+          <VscEye
+            size={25}
+            className="mx-4 text-gray-500 hover:cursor-pointer"
+            onMouseDown={() => setShowPassword(true)}
+            onMouseUp={() => setShowPassword(false)}
+            onMouseLeave={() => setShowPassword(false)}
+          />
+        </div>
         <input
           type="submit"
           value="Log In"
