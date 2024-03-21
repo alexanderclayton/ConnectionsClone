@@ -1,6 +1,7 @@
 import { useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context";
+import { IoExtensionPuzzleOutline } from "react-icons/io5";
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -48,28 +49,31 @@ export const Home = () => {
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center bg-purple-300">
-      <h1 className="text-3xl font-bold">Connections Clone</h1>
-      <p className="text-lg">Group words that share a common thread.</p>
+      <IoExtensionPuzzleOutline size={60} />
+      <h1 className="mt-4 text-3xl font-bold">Connections Clone</h1>
+      <p className="mt-3 w-[50%] text-center text-lg">
+        Group words that share a common thread.
+      </p>
       <button
-        className="rounded-full bg-black px-12 py-3 font-bold text-white"
+        className="mt-6 w-[40%] rounded-full bg-black px-12 py-3 font-bold text-white"
         onClick={() => navigate("/game")}
       >
         Play
       </button>
-      <p>Want to access all of our games?</p>
+      <p className="mt-6 font-bold">Want to access all of our games?</p>
       <button
-        className="rounded-full border border-black px-12 py-3 font-bold"
+        className="mt-3 w-[40%] rounded-full border border-black px-12 py-3 font-bold"
         onClick={() => navigate("/signin")}
       >
         Log In
       </button>
       <button
-        className="rounded-full border border-black px-12 py-3 font-bold"
+        className="mt-3 w-[40%] rounded-full border border-black px-12 py-3 font-bold"
         onClick={() => console.log("subscribe")}
       >
         Subscribe
       </button>
-      <p className="font-bold">{getCurrentDate()}</p>
+      <p className="mt-6 font-bold">{getCurrentDate()}</p>
       <p>By Alex Clayton</p>
     </div>
   );
