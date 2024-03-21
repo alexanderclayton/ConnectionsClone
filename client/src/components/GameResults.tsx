@@ -27,7 +27,7 @@ export const GameResults = ({
   setShowResults,
 }: IGameResultsProps) => {
   const { token } = useAuth();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [resultMessage, setResultMessage] = useState("");
   const [tomorrow, setTomorrow] = useState("");
 
@@ -54,14 +54,14 @@ export const GameResults = ({
   return (
     <>
       {showResults && (
-        <div className="fixed left-0 top-0 z-50 h-full w-full items-center justify-center bg-black bg-opacity-50 p-4">
-          <div className="relative rounded-lg bg-white p-4">
+        <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-black bg-opacity-50 p-4">
+          <div className="relative w-96 rounded-lg bg-white p-4">
             <div className="absolute right-2 top-2 flex items-center hover:cursor-pointer">
               <p className="mr-2 pb-1">Back to puzzle</p>
               <IoMdClose size={30} onClick={() => setShowResults(false)} />
             </div>
             <div className="flex flex-col items-center justify-center">
-              <h1 className="mb-4 mt-16 text-2xl font-bold">{resultMessage}</h1>
+              <h1 className="mb-4 mt-16 text-3xl font-bold">{resultMessage}</h1>
               <h2 className="mb-4 text-center">
                 ConnectionsClone <br /> {currentDate}
               </h2>
@@ -89,7 +89,10 @@ export const GameResults = ({
                 <button className="m-1 w-[50%] rounded-full bg-black px-2 py-3 font-bold text-white">
                   Share Your Results
                 </button>
-                <button className="m-1 w-[50%] rounded-full bg-black px-2 py-3 font-bold text-white" onClick={() =>navigate('/postgame')}>
+                <button
+                  className="m-1 w-[50%] rounded-full bg-black px-2 py-3 font-bold text-white"
+                  onClick={() => navigate("/postgame")}
+                >
                   Leaderboard
                 </button>
               </div>

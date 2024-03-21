@@ -28,7 +28,7 @@ export const Game = () => {
   return (
     <>
       <Header />
-      <main>
+      <main className="flex h-screen w-full flex-col items-center justify-center">
         {isPlayed ? (
           <Navigate to="/postgame" />
         ) : (
