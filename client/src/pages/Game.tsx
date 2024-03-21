@@ -28,7 +28,7 @@ export const Game = () => {
   return (
     <>
       <Header />
-      <main className="flex h-screen w-full flex-col items-center justify-center">
+      <main className="flex w-full flex-col items-center justify-center">
         {isPlayed ? (
           <Navigate to="/postgame" />
         ) : (
@@ -44,17 +44,16 @@ export const Game = () => {
                 setShowResults={setShowResults}
               />
             )}
-            {incorrect === 4 ||
-              (solutions.length === 4 && (
-                <GameResults
-                  solutions={solutions}
-                  currentDate={currentDate}
-                  guesses={guesses}
-                  incorrect={incorrect}
-                  showResults={showResults}
-                  setShowResults={setShowResults}
-                />
-              ))}
+            {(incorrect === 4 || solutions.length === 4) && (
+              <GameResults
+                solutions={solutions}
+                currentDate={currentDate}
+                guesses={guesses}
+                incorrect={incorrect}
+                showResults={showResults}
+                setShowResults={setShowResults}
+              />
+            )}
           </>
         )}
       </main>
