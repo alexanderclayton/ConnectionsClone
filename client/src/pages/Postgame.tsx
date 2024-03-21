@@ -1,9 +1,9 @@
-import { Leaderboard } from "../components"
+import { Leaderboard } from "../components";
 
 export const Postgame = () => {
   return (
-    <div>
-        <Leaderboard />
+    <div className="flex h-screen w-full flex-col items-center">
+      <Leaderboard />
     </div>
-  )
-}
+  );
+};

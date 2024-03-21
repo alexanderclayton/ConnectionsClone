@@ -55,23 +55,23 @@ export const Home = () => {
         Group words that share a common thread.
       </p>
       <button
-        className="mt-6 w-[40%] rounded-full bg-black px-12 py-3 font-bold text-white"
+        className="mt-6 w-[40%] rounded-full bg-black py-3 font-bold text-white"
         onClick={() => navigate("/game")}
       >
         Play
       </button>
       <p className="mt-6 font-bold">Want to access all of our games?</p>
       <button
-        className="mt-3 w-[40%] rounded-full border border-black px-12 py-3 font-bold"
+        className="mt-3 w-[40%] rounded-full border border-black py-3 font-bold"
         onClick={() => navigate("/signin")}
       >
         Log In
       </button>
       <button
-        className="mt-3 w-[40%] rounded-full border border-black px-12 py-3 font-bold"
-        onClick={() => console.log("subscribe")}
+        className="mt-3 w-[40%] rounded-full border border-black py-3 font-bold"
+        onClick={() => navigate("/postgame")}
       >
-        Subscribe
+        Leaderboard
       </button>
       <p className="mt-6 font-bold">{getCurrentDate()}</p>
       <p>By Alex Clayton</p>

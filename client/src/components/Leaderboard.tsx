@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { TUser } from "../types";
+import { useNavigate } from "react-router";
 
 export const Leaderboard = () => {
+  const navigate = useNavigate();
   const [allUsers, setAllUsers] = useState<TUser[] | undefined>(undefined);
   const [rankedUsers, setRankedUsers] = useState<TUser[] | undefined>(
     undefined,
@@ -41,7 +43,7 @@ export const Leaderboard = () => {
         });
         return totalScoreB - totalScoreA;
       });
-      setRankedUsers(sortedUsers);
+      setRankedUsers(sortedUsers.slice(0, 10));
     } else {
       console.log("Cannot rank users");
     }
@@ -66,12 +68,12 @@ export const Leaderboard = () => {
   }, [allUsers]);
 
   return (
-    <div className="w-[40%]">
-      <h2 className="flex w-full items-center justify-center bg-blue-200 text-2xl font-bold">
+    <div className="flex h-full w-full flex-col items-center bg-purple-300 p-4">
+      <h2 className="mt-8 flex w-full items-center justify-center text-2xl font-bold">
         Leaderboard
       </h2>
       {allUsers && (
-        <table className="w-full border-collapse border">
+        <table className="mt-4 w-full">
           <thead>
             <tr className="bg-gray-200">
               <th className="border border-gray-300 px-4 py-2 text-center">
@@ -85,24 +87,28 @@ export const Leaderboard = () => {
               </th>
             </tr>
           </thead>
-          <tbody>
-            {allUsers.map((user, idx) => (
-              <tr key={idx} className="bg-white">
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  {idx + 1}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  {user.username}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  {leaderboardScore(user)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
+          {rankedUsers && (
+            <tbody>
+              {rankedUsers.map((user, idx) => (
+                <tr key={idx} className="bg-white">
+                  <td className="border border-gray-300 px-4 py-2 text-center">
+                    {idx + 1}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2 text-center">
+                    {user.username}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2 text-center">
+                    {leaderboardScore(user)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          )}
         </table>
       )}
-      <button onClick={() => console.log(rankedUsers)}>Leaderboard</button>
+      <button className="mt-6" onClick={() => navigate("/")}>
+        Return Home
+      </button>
     </div>
   );
 };
