@@ -13,8 +13,8 @@ function App() {
             <Route path="/createaccount" element={<CreateAccount />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/game" element={<Game />} />
-              <Route path="/postgame" element={<Postgame />} />
             </Route>
+            <Route path="/postgame" element={<Postgame />} />
           </Routes>
         </AuthProvider>
       </Router>
