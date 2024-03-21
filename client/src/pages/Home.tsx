@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context";
 
 export const Home = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const months = [
     "January",
@@ -40,8 +42,8 @@ export const Home = () => {
     return `${day} ${month} ${date}, ${year}`;
   };
 
-  useEffect(() => {
-    localStorage.removeItem("token");
+  useLayoutEffect(() => {
+    logout();
   }, []);
 
   return (
