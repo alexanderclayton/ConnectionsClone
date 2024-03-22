@@ -4,10 +4,6 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_requir
 from config import app, mongo
 from models import Game, User
 
-@app.route("/", methods=["GET"])
-def get_app():
-    return jsonify({"message": "Hello World"})
-
 @app.route("/game/<date>", methods=["GET"])
 @jwt_required()
 def get_game(date):
