@@ -20,6 +20,7 @@ bcrypt = Bcrypt(app)
 app.config["MONGO_URI"] = MONGODB_URI
 app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=30)
+app.config["DEBUG"] = False
 
 app.secret_key = SECRET_KEY
 

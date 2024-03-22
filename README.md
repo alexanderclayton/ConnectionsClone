@@ -63,3 +63,5 @@ score: number
 "username": "test",
 "password": "test"
 }
+
+SPECIFY MONGO DB NAME IN URI ".net/<DATABASE NAME>?"
