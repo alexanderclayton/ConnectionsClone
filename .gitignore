@@ -4,5 +4,8 @@
 # Ignore Python bytecode cache files
 __pycache__/
 
+# Ignore virtual environment files
+myenv
+
 # Ignore node_modules
 node_modules
