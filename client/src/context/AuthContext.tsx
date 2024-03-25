@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
 
   const login = async (username: string, password: string) => {
     try {
-      const response = await fetch("https://64.23.175.1:5002/login", {
+      const response = await fetch("https://connectionsclone.crabdance.com:5002/login", {
         method: "POST",
         mode: "cors",
         headers: {
