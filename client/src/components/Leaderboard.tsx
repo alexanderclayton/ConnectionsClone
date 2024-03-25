@@ -11,7 +11,7 @@ export const Leaderboard = () => {
 
   const fetchAllUsers = async () => {
     try {
-      const response = await fetch("http://64.23.175.1:5002/get_users", {
+      const response = await fetch("https://64.23.175.1:5002/get_users", {
         method: "GET",
         mode: "cors",
         headers: {

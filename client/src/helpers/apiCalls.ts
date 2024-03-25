@@ -10,7 +10,7 @@ export const fetchGame = async (
 ) => {
     try {
       const response = await fetch(
-        `http://64.23.175.1:5002/game/${currentDate}`,
+        `https://64.23.175.1:5002/game/${currentDate}`,
         {
           method: "GET",
           mode: "cors",
@@ -41,7 +41,7 @@ export const addRecord = async (
     incorrect: number
 ) => {
     try {
-      const response = await fetch("http://64.23.175.1:5002/add_record", {
+      const response = await fetch("https://64.23.175.1:5002/add_record", {
         method: "PUT",
         mode: "cors",
         headers: {

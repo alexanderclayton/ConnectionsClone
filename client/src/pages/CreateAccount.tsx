@@ -34,7 +34,7 @@ export const CreateAccount = () => {
 
   const addUser = async () => {
     try {
-      const response = await fetch("http://64.23.175.1:5002/add_user", {
+      const response = await fetch("https://64.23.175.1:5002/add_user", {
         method: "POST",
         mode: "cors",
         headers: {
