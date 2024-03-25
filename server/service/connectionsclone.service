@@ -5,7 +5,7 @@ After=network.target
 [Service]
 User=root
 WorkingDirectory=/root/ConnectionsClone
-ExecStart=/root/ConnectionsClone/myenv/bin/gunicorn -b 0.0.0.0:5002 main:app
+ExecStart=/root/ConnectionsClone/myenv/bin/gunicorn -b 0.0.0.0:5002 --certfile /etc/nginx/cert.crt --keyfile /etc/nginx/cert.key main:app
 Restart=always
 
 [Install]
