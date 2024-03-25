@@ -1,0 +1,12 @@
+[Unit]
+Description=ConnectionsClone
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/root/ConnectionsClone
+ExecStart=/root/ConnectionsClone/myenv/bin/gunicorn -b 0.0.0.0:5002 --certfile /etc/letsencrypt/live/connectionsclone.crabdance.com/fullchain.pem --keyfile /etc/letsencrypt/live/connectionsclone.crabdance.com/privkey.pem main:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
